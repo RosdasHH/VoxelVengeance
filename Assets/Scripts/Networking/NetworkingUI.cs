@@ -1,25 +1,36 @@
-using Newtonsoft.Json.Bson;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 public class NetworkingUI : MonoBehaviour
 {
-    NetworkManager networkManager;
-    UnityTransport unityTransport;
-    private void Start()
+    private NetworkManager nm;
+    private UnityTransport utp;
+
+    private void Awake()
     {
-        networkManager = GetComponent<NetworkManager>();
-        unityTransport = GetComponent<UnityTransport>();
-    }
-    public void hostServer()
-    {
-        unityTransport.SetConnectionData("127.0.0.1", (ushort)6767);
-        networkManager.StartServer();
+        nm = NetworkManager.Singleton;
+        utp = nm.GetComponent<UnityTransport>();
     }
 
-   public void connectClient()
+    public void ServerOnly()
     {
-        GetComponent<NetworkManager>().StartClient();
+        utp.ConnectionData.ServerListenAddress = "0.0.0.0";
+        utp.ConnectionData.Port = 6767;
+
+        nm.StartServer();
+    }
+
+    public void ConnectClient()
+    {
+        utp.ConnectionData.Address = "12n.ddns.wtf";
+        utp.ConnectionData.Port = 6767;
+
+        nm.StartClient();
+    }
+
+    public void Stop()
+    {
+        nm.Shutdown();
     }
 }
