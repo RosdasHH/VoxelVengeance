@@ -7,8 +7,6 @@ public class Bullet : MonoBehaviour
     private float tickTimer;
     private float bulletSpeed = 10f;
 
-    private Vector3 velocity = Vector3.forward;
-
     void Update()
     {
         tickTimer += Time.deltaTime;
@@ -22,7 +20,7 @@ public class Bullet : MonoBehaviour
 
     void SimulateTick()
     {
-        transform.position += velocity * TickRate * bulletSpeed;
+        transform.position += transform.forward * TickRate * bulletSpeed;
     }
 
     private void OnTriggerEnter(Collider other)
