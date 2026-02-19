@@ -11,16 +11,18 @@ public class Shoot : NetworkBehaviour
 
     private EquipWeapon equipWeapon;
 
-    private InputAction shootAction;
+    private UserInput userInput;
+
+    
     private void Awake()
     {
-        shootAction = InputSystem.actions.FindAction("Attack");
         equipWeapon = GetComponent<EquipWeapon>();
+        userInput = GetComponent<UserInput>();
     }
     private void Update()
     {
         if (!equipWeapon.IsOwner) return;
-        if(shootAction.WasPressedThisFrame())
+        if(UserInput.WasShootPressed)
         {
             shoot();
         }

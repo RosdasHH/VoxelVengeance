@@ -509,12 +509,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Slot1",
-                    "id": "0be3a9c0-ba19-4bb0-a0b1-eef75a46329c",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Escape",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -526,7 +520,23 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Slot1",
-                    "id": "43f9ad9c-94cb-4d08-ba1a-122d2316df62",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c5bff402-cff0-433d-a091-28dcf58737d4",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "281ea474-b5c2-47fa-a648-f23d2e5ec021",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",

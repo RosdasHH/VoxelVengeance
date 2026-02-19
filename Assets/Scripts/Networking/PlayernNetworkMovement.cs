@@ -32,11 +32,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private TransformState[] _transformStates = new TransformState[BUFFER_SIZE];
 
     public NetworkVariable<TransformState> ServerTransformState =
-    new NetworkVariable<TransformState>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
+        new NetworkVariable<TransformState>(
+            default,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
     public TransformState _previousTransformState;
 
     [SerializeField]
@@ -205,7 +205,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         accumulatedRotation += rotationAmount;
         transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
-        Debug.Log(accumulatedRotation);
 
         transform.Translate(
             movementInput.x * _tickRate * speed,
@@ -213,6 +212,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
             movementInput.y * _tickRate * speed
         );
     }
+
     private void OnDisable()
     {
         // InputActions.FindActionMap("Player").Disable();
