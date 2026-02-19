@@ -13,18 +13,26 @@ public class NetworkingUI : MonoBehaviour
         utp = nm.GetComponent<UnityTransport>();
     }
 
-    public void ServerOnly()
+    public void StartServer()
     {
-        //utp.ConnectionData.ServerListenAddress = "0.0.0.0";
-        //utp.ConnectionData.Port = 6767;
+        utp.ConnectionData.ServerListenAddress = "0.0.0.0";
+        utp.ConnectionData.Port = 6767;
 
         nm.StartServer();
     }
 
-    public void ConnectClient()
+    public void ConnectClientLocal()
     {
-        //utp.ConnectionData.Address = "12n.ddns.wtf";
-        //utp.ConnectionData.Port = 6767;
+        utp.ConnectionData.Address = "127.0.0.1";
+        utp.ConnectionData.Port = 6767;
+
+        nm.StartClient();
+    }
+
+    public void ConnectClientExternal()
+    {
+        utp.ConnectionData.Address = "12n.ddns.wtf";
+        utp.ConnectionData.Port = 6767;
 
         nm.StartClient();
     }
