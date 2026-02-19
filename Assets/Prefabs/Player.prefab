@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 106946503319271096}
   - component: {fileID: -5395613126061688533}
   - component: {fileID: 4522997298007046469}
+  - component: {fileID: 2184842156633436658}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -155,3 +156,16 @@ MonoBehaviour:
   speed: 10
   InputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _meshFilter: {fileID: 7268038600775045915}
+--- !u!114 &2184842156633436658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554929786526205934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fec3343258ecc54e98e50905246992f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  ShowTopMostFoldoutHeaderGroup: 1

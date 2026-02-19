@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UIElements;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerNetworkMovement : NetworkBehaviour
 {
     [SerializeField]
     private float speed;
@@ -29,6 +29,9 @@ public class PlayerMovement : NetworkBehaviour
     public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
     public TransformState _previousTransformState;
 
+    [SerializeField]
+    float threshold = 0.01f;
+
     //Debug
     [SerializeField]
     private MeshFilter _meshFilter;
@@ -43,13 +46,11 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsLocalPlayer) return;
 
-        if(_previousTransformState.Position == null)
-        {
-            _previousTransformState = serverState;
-        }
+        _previousTransformState = serverState;
 
+        float thresholdSqr = threshold * threshold;
         TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
-        if (calculatedState.Position != serverState.Position)
+        if ((calculatedState.Position - serverState.Position).sqrMagnitude > thresholdSqr)
         {
             Debug.Log("Correcting client position");
             //Teleport to Server position
