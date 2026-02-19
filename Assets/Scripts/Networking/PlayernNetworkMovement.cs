@@ -32,7 +32,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private TransformState[] _transformStates = new TransformState[BUFFER_SIZE];
 
     public NetworkVariable<TransformState> ServerTransformState =
-        new NetworkVariable<TransformState>();
+    new NetworkVariable<TransformState>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
     public TransformState _previousTransformState;
 
     [SerializeField]
