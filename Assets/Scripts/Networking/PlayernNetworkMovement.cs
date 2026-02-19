@@ -37,10 +37,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [SerializeField]
     float threshold = 0.01f;
 
-    //Debug
-    [SerializeField]
-    private MeshFilter _meshFilter;
-
     private void OnEnable()
     {
         // InputActions.FindActionMap("Player").Enable();
@@ -63,7 +59,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             // movementInput = moveAction.ReadValue<Vector2>();
             movementInput = UserInput.MoveInput;
-            Debug.Log(movementInput);
+            //Debug.Log(movementInput);
             ProcessLocalPlayerMovement(movementInput);
         }
         else
@@ -198,13 +194,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
             movementInput.y * _tickRate * speed
         );
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawMesh(_meshFilter.mesh, ServerTransformState.Value.Position);
-    }
-
     private void OnDisable()
     {
         // InputActions.FindActionMap("Player").Disable();

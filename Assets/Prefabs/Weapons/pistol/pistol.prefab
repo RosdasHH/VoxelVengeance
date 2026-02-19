@@ -109,9 +109,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6986388730997327210}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7468011916095871288}
   m_SourcePrefab: {fileID: 100100000, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
 --- !u!4 &1689208924716168435 stripped
 Transform:
@@ -148,18 +145,3 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &7468011916095871288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034103373393833545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70e01c4191fe58d43b23f52cacd6aef1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Shoot
-  ShowTopMostFoldoutHeaderGroup: 1
-  Bullet: {fileID: 0}
-  BulletSpawnPoint: {fileID: 25031436342925881}

@@ -19,9 +19,26 @@ public class Shoot : NetworkBehaviour
     }
     private void Update()
     {
+        if (!equipWeapon.IsOwner) return;
         if(shootAction.WasPressedThisFrame())
         {
-            Debug.Log("Shoot"); //Ownership problems
+            shoot();
         }
+    }
+    private void shoot()
+    {
+        instantiation();
+        ShootServerRpc();
+    }
+
+    [ServerRpc]
+    public void ShootServerRpc()
+    {
+        instantiation();
+    }
+
+    private void instantiation()
+    {
+        Instantiate(Bullet, BulletSpawnPoint.transform.position, BulletSpawnPoint.transform.rotation);
     }
 }
