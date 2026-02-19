@@ -6,27 +6,27 @@ public class Shoot : NetworkBehaviour
 {
     [SerializeField]
     private GameObject Bullet;
+
     [SerializeField]
     Transform BulletSpawnPoint;
 
     private EquipWeapon equipWeapon;
 
-    private UserInput userInput;
-
-    
     private void Awake()
     {
         equipWeapon = GetComponent<EquipWeapon>();
-        userInput = GetComponent<UserInput>();
     }
+
     private void Update()
     {
-        if (!equipWeapon.IsOwner) return;
-        if(UserInput.WasShootPressed)
+        if (!equipWeapon.IsOwner)
+            return;
+        if (UserInput.WasShootPressed)
         {
             shoot();
         }
     }
+
     private void shoot()
     {
         instantiation();
@@ -43,12 +43,17 @@ public class Shoot : NetworkBehaviour
     [ClientRpc]
     public void SpawnBulletClientRpc()
     {
-        if(IsOwner) return;
+        if (IsOwner)
+            return;
         instantiation();
     }
 
     private void instantiation()
     {
-        Instantiate(Bullet, BulletSpawnPoint.transform.position, BulletSpawnPoint.transform.rotation);
+        Instantiate(
+            Bullet,
+            BulletSpawnPoint.transform.position,
+            BulletSpawnPoint.transform.rotation
+        );
     }
 }

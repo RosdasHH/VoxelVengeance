@@ -11,15 +11,10 @@ using UnityEngine.UIElements;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
-    [SerializeField]
-    private float speed;
-
-    [SerializeField]
-    private float rotationSpeed;
-    private float accumulatedRotation;
-
     private PlayerInput playerInput;
     private InputAction moveAction;
+
+    PlayerMovement playerMovement;
 
     // private Vector2 movementInput;
 
@@ -48,14 +43,19 @@ public class PlayerNetworkMovement : NetworkBehaviour
         ServerTransformState.OnValueChanged += OnServerStateChange;
     }
 
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
+
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)
             return;
 
-        playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
         moveAction.Enable();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
@@ -98,7 +98,17 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             foreach (var inputState in inputs)
             {
-                movePlayer(inputState.MovementInput, inputState.LookInput);
+                if (playerMovement == null)
+                {
+                    playerMovement = GetComponent<PlayerMovement>();
+                    Debug.LogError("PlayerMovement missing on server prefab!");
+                    return;
+                }
+                playerMovement.movePlayer(
+                    inputState.MovementInput,
+                    inputState.LookInput,
+                    _tickRate
+                );
 
                 TransformState newTransformState = new TransformState()
                 {
@@ -141,7 +151,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             int bufferIndex = _tick % BUFFER_SIZE;
             MovePlayerServerRpc(_tick, movementInput, lookInput);
-            movePlayer(movementInput, lookInput);
+            if (playerMovement == null)
+            {
+                playerMovement = GetComponent<PlayerMovement>();
+                Debug.LogError("PlayerMovement missing on server prefab!");
+                return;
+            }
+            playerMovement.movePlayer(movementInput, lookInput, _tickRate);
             InputState inputState = new InputState
             {
                 Tick = _tick,
@@ -187,7 +203,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
         //{
         //    Debug.Log("Lost a package!");
         //}
-        movePlayer(movementInput, lookInput);
+        if (playerMovement == null)
+        {
+            playerMovement = GetComponent<PlayerMovement>();
+            Debug.LogError("PlayerMovement missing on server prefab!");
+            return;
+        }
+        playerMovement.movePlayer(movementInput, lookInput, _tickRate);
         TransformState state = new TransformState()
         {
             Tick = tick,
@@ -199,24 +221,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
         ServerTransformState.Value = state;
     }
 
-    private void movePlayer(Vector2 movementInput, Vector2 lookInput)
-    {
-        float rotationAmount = lookInput.x * rotationSpeed * _tickRate;
-
-        accumulatedRotation += rotationAmount;
-        transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
-
-        transform.Translate(
-            movementInput.x * _tickRate * speed,
-            0,
-            movementInput.y * _tickRate * speed
-        );
-    }
-
     private void OnDisable()
     {
         // InputActions.FindActionMap("Player").Disable();
     }
-
-    private void Awake() { }
 }

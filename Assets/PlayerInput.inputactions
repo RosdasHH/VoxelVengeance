@@ -104,15 +104,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "EscapePauseMenu",
-                    "type": "Button",
-                    "id": "d0fd27c5-67a5-4730-ae86-fa12a1c50059",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -533,17 +524,6 @@
                     "action": "Escape",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "281ea474-b5c2-47fa-a648-f23d2e5ec021",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EscapePauseMenu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -637,6 +617,15 @@
                     "type": "PassThrough",
                     "id": "9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be",
                     "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "EscapePauseMenu",
+                    "type": "Button",
+                    "id": "71c827a9-ff1a-4539-b0e0-85ec389447b2",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1058,6 +1047,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "982c0fe1-d372-4c26-bc0f-5d9647c9d8f4",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EscapePauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

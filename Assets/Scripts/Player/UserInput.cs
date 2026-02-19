@@ -9,7 +9,8 @@ public class UserInput : MonoBehaviour
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
 
-    private PlayerInput playerInput;
+    public static PlayerInput playerInput;
+    
     private InputAction _moveAction;
     private InputAction _wasEscapePressed;
     private InputAction _lookAction;
