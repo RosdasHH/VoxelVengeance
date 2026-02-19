@@ -1,3 +1,7 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -25,15 +29,72 @@ public class PlayerMovement : NetworkBehaviour
     public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
     public TransformState _previousTransformState;
 
+    //Debug
+    [SerializeField]
+    private MeshFilter _meshFilter;
+
     private void OnEnable()
     {
         InputActions.FindActionMap("Player").Enable();
         ServerTransformState.OnValueChanged += OnServerStateChange;
     }
 
-    private void OnServerStateChange(TransformState previousValue, TransformState newvalue)
+    private void OnServerStateChange(TransformState previousValue, TransformState serverState)
     {
-        _previousTransformState = previousValue;
+        if (!IsLocalPlayer) return;
+
+        if(_previousTransformState.Position == null)
+        {
+            _previousTransformState = serverState;
+        }
+
+        TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
+        if (calculatedState.Position != serverState.Position)
+        {
+            Debug.Log("Correcting client position");
+            //Teleport to Server position
+            TeleportPlayer(serverState);
+
+            //Replay inputs
+            IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
+            inputs = from input in inputs orderby input.Tick select input;
+
+            foreach (var inputState in inputs)
+            {
+                movePlayer(inputState.MovementInput);
+
+                TransformState newTransformState = new TransformState()
+                { 
+                    Tick = inputState.Tick,
+                    Position = transform.position,
+                    HasStartedMoving = true,
+                };
+
+                for (int i = 0; i < _transformStates.Length; i++)
+                {
+                    if (_transformStates[i].Tick == inputState.Tick)
+                    {
+                        _transformStates[i] = newTransformState;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void TeleportPlayer(TransformState serverState)
+    {
+        //If we have a Character Controller, we have to deactivate it here before we teleport
+        transform.position = serverState.Position;
+
+        for (int i = 0; i < _transformStates.Length; i++)
+        {
+            if (_transformStates[i].Tick == serverState.Tick)
+            {
+                _transformStates[i] = serverState;
+                break;
+            }
+        }
     }
 
     public void ProcessLocalPlayerMovement(Vector2 movementInput)
@@ -118,6 +179,12 @@ public class PlayerMovement : NetworkBehaviour
     private void movePlayer(Vector2 movementInput)
     {
         transform.Translate(movementInput.x * _tickRate * speed, 0, movementInput.y * _tickRate * speed);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawMesh(_meshFilter.mesh, ServerTransformState.Value.Position);
     }
 
     private void OnDisable()

@@ -29,8 +29,12 @@ public class NetworkingUI : MonoBehaviour
         nm.StartClient();
     }
 
-    public void Stop()
+    private void OnApplicationQuit()
     {
-        nm.Shutdown();
+        if (nm != null && nm.IsListening)
+        {
+            nm.Shutdown();
+            utp.Shutdown();
+        }
     }
 }
