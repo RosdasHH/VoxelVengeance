@@ -297,9 +297,9 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 12n.ddns.wtf
+    Address: 127.0.0.1
     Port: 6767
-    ServerListenAddress: '::'
+    ServerListenAddress: 0.0.0.0
     ClientBindPort: 0
   DebugSimulator:
     PacketDelayMS: 0
@@ -524,7 +524,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afd165dbd1a6aa4c9ece242498ce271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cam
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
