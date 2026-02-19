@@ -13,20 +13,21 @@ public class PlayerNetworkMovement : NetworkBehaviour
 {
     [SerializeField]
     private float speed;
-    [SerializeField]
-    private InputActionAsset InputActions;
+
+    private PlayerInput playerInput;
     private InputAction moveAction;
     private Vector2 movementInput;
 
     private int _tick = 0;
-    private float _tickRate = 1f/128f;
+    private float _tickRate = 1f / 128f;
     private float _tickDeltaTime = 0f;
 
     private const int BUFFER_SIZE = 1024;
     private InputState[] _inputStates = new InputState[BUFFER_SIZE];
     private TransformState[] _transformStates = new TransformState[BUFFER_SIZE];
 
-    public NetworkVariable<TransformState> ServerTransformState = new NetworkVariable<TransformState>();
+    public NetworkVariable<TransformState> ServerTransformState =
+        new NetworkVariable<TransformState>();
     public TransformState _previousTransformState;
 
     [SerializeField]
@@ -38,18 +39,46 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void OnEnable()
     {
-        InputActions.FindActionMap("Player").Enable();
+        // InputActions.FindActionMap("Player").Enable();
         ServerTransformState.OnValueChanged += OnServerStateChange;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+            return;
+
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions["Move"];
+        moveAction.Enable();
+    }
+
+    void Update()
+    {
+        if (IsClient && IsLocalPlayer)
+        {
+            // movementInput = moveAction.ReadValue<Vector2>();
+            movementInput = UserInput.MoveInput;
+            Debug.Log(movementInput);
+            ProcessLocalPlayerMovement(movementInput);
+        }
+        else
+        {
+            ProcessSimulatedPlayerMovement();
+        }
     }
 
     private void OnServerStateChange(TransformState previousValue, TransformState serverState)
     {
-        if (!IsLocalPlayer) return;
+        if (!IsLocalPlayer)
+            return;
 
         _previousTransformState = serverState;
 
         float thresholdSqr = threshold * threshold;
-        TransformState calculatedState = _transformStates.First(localState => localState.Tick == serverState.Tick);
+        TransformState calculatedState = _transformStates.First(localState =>
+            localState.Tick == serverState.Tick
+        );
         if ((calculatedState.Position - serverState.Position).sqrMagnitude > thresholdSqr)
         {
             Debug.Log("Correcting client position");
@@ -57,7 +86,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
             TeleportPlayer(serverState);
 
             //Replay inputs
-            IEnumerable<InputState> inputs = _inputStates.Where(input => input.Tick > serverState.Tick);
+            IEnumerable<InputState> inputs = _inputStates.Where(input =>
+                input.Tick > serverState.Tick
+            );
             inputs = from input in inputs orderby input.Tick select input;
 
             foreach (var inputState in inputs)
@@ -65,7 +96,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
                 movePlayer(inputState.MovementInput);
 
                 TransformState newTransformState = new TransformState()
-                { 
+                {
                     Tick = inputState.Tick,
                     Position = transform.position,
                     HasStartedMoving = true,
@@ -106,11 +137,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
             int bufferIndex = _tick % BUFFER_SIZE;
             MovePlayerServerRpc(_tick, movementInput);
             movePlayer(movementInput);
-            InputState inputState = new InputState
-            {
-                Tick = _tick,
-                MovementInput = movementInput
-            };
+            InputState inputState = new InputState { Tick = _tick, MovementInput = movementInput };
 
             TransformState transformState = new TransformState()
             {
@@ -130,32 +157,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
     public void ProcessSimulatedPlayerMovement()
     {
         _tickDeltaTime += Time.deltaTime;
-        if(_tickDeltaTime > _tickRate)
+        if (_tickDeltaTime > _tickRate)
         {
-            if(ServerTransformState.Value.HasStartedMoving)
+            if (ServerTransformState.Value.HasStartedMoving)
             {
                 transform.position = ServerTransformState.Value.Position;
             }
             _tickDeltaTime -= _tickRate;
             _tick++;
-        }
-    }
-
-
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-    }
-    
-    void Update()
-    {
-        if(IsClient && IsLocalPlayer)
-        {
-            movementInput = moveAction.ReadValue<Vector2>();
-            ProcessLocalPlayerMovement(movementInput);
-        } else
-        {
-            ProcessSimulatedPlayerMovement();
         }
     }
 
@@ -171,7 +180,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             Tick = tick,
             Position = transform.position,
-            HasStartedMoving = true
+            HasStartedMoving = true,
         };
         _previousTransformState = ServerTransformState.Value;
         ServerTransformState.Value = state;
@@ -179,7 +188,11 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void movePlayer(Vector2 movementInput)
     {
-        transform.Translate(movementInput.x * _tickRate * speed, 0, movementInput.y * _tickRate * speed);
+        transform.Translate(
+            movementInput.x * _tickRate * speed,
+            0,
+            movementInput.y * _tickRate * speed
+        );
     }
 
     private void OnDrawGizmos()
@@ -190,11 +203,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void OnDisable()
     {
-        InputActions.FindActionMap("Player").Disable();
+        // InputActions.FindActionMap("Player").Disable();
     }
 
-    private void Awake()
-    {
-        moveAction = InputSystem.actions.FindAction("Move");
-    }
+    private void Awake() { }
 }
