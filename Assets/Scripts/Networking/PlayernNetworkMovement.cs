@@ -14,9 +14,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [SerializeField]
     private float speed;
 
+    [SerializeField]
+    private float rotationSpeed;
+    private float accumulatedRotation;
+
     private PlayerInput playerInput;
     private InputAction moveAction;
-    private Vector2 movementInput;
+
+    // private Vector2 movementInput;
 
     private int _tick = 0;
     private float _tickRate = 1f / 128f;
@@ -58,9 +63,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
         if (IsClient && IsLocalPlayer)
         {
             // movementInput = moveAction.ReadValue<Vector2>();
-            movementInput = UserInput.MoveInput;
-            Debug.Log(movementInput);
-            ProcessLocalPlayerMovement(movementInput);
+            Vector2 movementInput = UserInput.MoveInput;
+            Vector2 lookInput = UserInput.LookInput;
+            ProcessLocalPlayerMovement(movementInput, lookInput);
         }
         else
         {
@@ -93,7 +98,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             foreach (var inputState in inputs)
             {
-                movePlayer(inputState.MovementInput);
+                movePlayer(inputState.MovementInput, inputState.LookInput);
 
                 TransformState newTransformState = new TransformState()
                 {
@@ -129,20 +134,26 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
     }
 
-    public void ProcessLocalPlayerMovement(Vector2 movementInput)
+    public void ProcessLocalPlayerMovement(Vector2 movementInput, Vector2 lookInput)
     {
         _tickDeltaTime += Time.deltaTime;
         if (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
-            MovePlayerServerRpc(_tick, movementInput);
-            movePlayer(movementInput);
-            InputState inputState = new InputState { Tick = _tick, MovementInput = movementInput };
+            MovePlayerServerRpc(_tick, movementInput, lookInput);
+            movePlayer(movementInput, lookInput);
+            InputState inputState = new InputState
+            {
+                Tick = _tick,
+                MovementInput = movementInput,
+                LookInput = lookInput,
+            };
 
             TransformState transformState = new TransformState()
             {
                 Tick = _tick,
                 Position = transform.position,
+                Rotation = transform.eulerAngles.y,
                 HasStartedMoving = true,
             };
 
@@ -162,6 +173,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
             if (ServerTransformState.Value.HasStartedMoving)
             {
                 transform.position = ServerTransformState.Value.Position;
+                transform.rotation = Quaternion.Euler(0, ServerTransformState.Value.Rotation, 0);
             }
             _tickDeltaTime -= _tickRate;
             _tick++;
@@ -169,25 +181,32 @@ public class PlayerNetworkMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void MovePlayerServerRpc(int tick, Vector2 movementInput)
+    private void MovePlayerServerRpc(int tick, Vector2 movementInput, Vector2 lookInput)
     {
         //if(_tick != _previousTransformState.Tick + 1)
         //{
         //    Debug.Log("Lost a package!");
         //}
-        movePlayer(movementInput);
+        movePlayer(movementInput, lookInput);
         TransformState state = new TransformState()
         {
             Tick = tick,
             Position = transform.position,
+            Rotation = transform.eulerAngles.y,
             HasStartedMoving = true,
         };
         _previousTransformState = ServerTransformState.Value;
         ServerTransformState.Value = state;
     }
 
-    private void movePlayer(Vector2 movementInput)
+    private void movePlayer(Vector2 movementInput, Vector2 lookInput)
     {
+        float rotationAmount = lookInput.x * rotationSpeed * _tickRate;
+
+        accumulatedRotation += rotationAmount;
+        transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
+        Debug.Log(accumulatedRotation);
+
         transform.Translate(
             movementInput.x * _tickRate * speed,
             0,
