@@ -95,6 +95,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "efd1c5a3-dbf9-4c10-9311-40961e38a102",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "EscapePauseMenu",
+                    "type": "Button",
+                    "id": "d0fd27c5-67a5-4730-ae86-fa12a1c50059",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -491,6 +509,12 @@
                     "processors": "",
                     "groups": "",
                     "action": "Slot1",
+                    "id": "0be3a9c0-ba19-4bb0-a0b1-eef75a46329c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -502,6 +526,12 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Slot1",
+                    "id": "43f9ad9c-94cb-4d08-ba1a-122d2316df62",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EscapePauseMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

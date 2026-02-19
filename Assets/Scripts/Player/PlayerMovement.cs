@@ -25,6 +25,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             cam.Priority = 0;
         }
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void FixedUpdate()
