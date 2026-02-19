@@ -37,6 +37,14 @@ public class Shoot : NetworkBehaviour
     public void ShootServerRpc()
     {
         instantiation();
+        SpawnBulletClientRpc();
+    }
+
+    [ClientRpc]
+    public void SpawnBulletClientRpc()
+    {
+        if(IsOwner) return;
+        instantiation();
     }
 
     private void instantiation()

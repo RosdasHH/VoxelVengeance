@@ -5,7 +5,7 @@ public class Bullet : MonoBehaviour
 {
     private const float TickRate = 1f / 128f;
     private float tickTimer;
-    private float bulletSpeed = 10f;
+    private float bulletSpeed = 40f;
 
     void Update()
     {
