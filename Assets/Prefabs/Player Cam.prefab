@@ -57,7 +57,6 @@ GameObject:
   - component: {fileID: 4381910710778674587}
   - component: {fileID: 8313304793383609376}
   - component: {fileID: 3333831829167365076}
-  - component: {fileID: 2010788181308500426}
   m_Layer: 0
   m_Name: Visor
   m_TagString: Untagged
@@ -137,27 +136,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2010788181308500426
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 327036032250805358}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1654632545393035893
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,9 +400,10 @@ GameObject:
   - component: {fileID: 1929784583482314341}
   - component: {fileID: -3811686222507912034}
   - component: {fileID: 4300491687583123421}
+  - component: {fileID: -8674938512358936634}
   m_Layer: 0
   m_Name: Player Cam
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -524,8 +503,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2.4993892, z: 1}
+  m_Center: {x: 0, y: 0.00060373545, z: 0}
 --- !u!114 &-5395613126061688533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,6 +635,21 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   Bullet: {fileID: 2733777879676128361, guid: 7ba0a0cab637a164bb8157f01a3d3354, type: 3}
   BulletSpawnPoint: {fileID: 8238299003613164891}
+--- !u!114 &-8674938512358936634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554929786526205934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dc1e9c8f8d843e45b1c10b245a9f432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  health:
+    m_InternalValue: 100
 --- !u!1 &7607197509368456803
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,7 +725,6 @@ GameObject:
   - component: {fileID: 7155847597016078297}
   - component: {fileID: 1770647183269820171}
   - component: {fileID: 5432674572112227607}
-  - component: {fileID: 8053808388905745747}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -811,27 +804,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8053808388905745747
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7994466556181909196}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8519214808786465944
 GameObject:
   m_ObjectHideFlags: 0

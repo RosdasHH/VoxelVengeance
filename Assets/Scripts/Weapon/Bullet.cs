@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     private const float TickRate = 1f / 128f;
     private float tickTimer;
@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
+        if (!IsServer) return;
         tickTimer += Time.deltaTime;
 
         while (tickTimer >= TickRate)
@@ -25,10 +26,12 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(!IsServer) return;
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Taking damage");
+            if (other.GetComponent<NetworkObject>().OwnerClientId == OwnerClientId) return;
+            other.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10);
         }
-        Destroy(gameObject);
+        NetworkObject.Despawn(true);
     }
 }

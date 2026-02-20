@@ -27,26 +27,14 @@ public class Shoot : NetworkBehaviour
     }
     private void shoot()
     {
-        instantiation();
         ShootServerRpc();
     }
 
     [ServerRpc]
     public void ShootServerRpc()
     {
-        instantiation();
-        SpawnBulletClientRpc();
-    }
-
-    [ClientRpc]
-    public void SpawnBulletClientRpc()
-    {
-        if(IsOwner) return;
-        instantiation();
-    }
-
-    private void instantiation()
-    {
-        Instantiate(Bullet, BulletSpawnPoint.transform.position, BulletSpawnPoint.transform.rotation);
+        GameObject instance = Instantiate(Bullet, BulletSpawnPoint.transform.position, BulletSpawnPoint.transform.rotation);
+        NetworkObject net = instance.GetComponent<NetworkObject>();
+        net.SpawnWithOwnership(OwnerClientId);
     }
 }

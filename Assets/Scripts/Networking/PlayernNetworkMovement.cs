@@ -56,6 +56,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
         moveAction.Enable();
+        base.OnNetworkSpawn();
     }
 
     void Update()
@@ -81,9 +82,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
         _previousTransformState = serverState;
 
         float thresholdSqr = threshold * threshold;
-        TransformState calculatedState = _transformStates.First(localState =>
-            localState.Tick == serverState.Tick
-        );
+        int bufferIndex = serverState.Tick % BUFFER_SIZE;
+        TransformState calculatedState = _transformStates[bufferIndex];
+        if (!calculatedState.HasStartedMoving || calculatedState.Tick != serverState.Tick)
+        {
+            TeleportPlayer(serverState);
+            return;
+        }
         if ((calculatedState.Position - serverState.Position).sqrMagnitude > thresholdSqr)
         {
             Debug.Log("Correcting client position");
@@ -91,10 +96,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
             TeleportPlayer(serverState);
 
             //Replay inputs
-            IEnumerable<InputState> inputs = _inputStates.Where(input =>
-                input.Tick > serverState.Tick
-            );
-            inputs = from input in inputs orderby input.Tick select input;
+            var inputs = _inputStates
+                .Where(i => i.Tick > serverState.Tick && (i.MovementInput != Vector2.zero || i.LookInput != Vector2.zero))
+                .OrderBy(i => i.Tick);
 
             foreach (var inputState in inputs)
             {
@@ -107,31 +111,20 @@ public class PlayerNetworkMovement : NetworkBehaviour
                     HasStartedMoving = true,
                 };
 
-                for (int i = 0; i < _transformStates.Length; i++)
-                {
-                    if (_transformStates[i].Tick == inputState.Tick)
-                    {
-                        _transformStates[i] = newTransformState;
-                        break;
-                    }
-                }
+                int idx = inputState.Tick % BUFFER_SIZE;
+                _transformStates[idx] = newTransformState;
             }
         }
     }
 
-    private void TeleportPlayer(TransformState serverState)
+    public void TeleportPlayer(TransformState serverState)
     {
-        //If we have a Character Controller, we have to deactivate it here before we teleport
         transform.position = serverState.Position;
+        transform.rotation = Quaternion.Euler(0, serverState.Rotation, 0);
+        accumulatedRotation = serverState.Rotation;
 
-        for (int i = 0; i < _transformStates.Length; i++)
-        {
-            if (_transformStates[i].Tick == serverState.Tick)
-            {
-                _transformStates[i] = serverState;
-                break;
-            }
-        }
+        int idx = serverState.Tick % BUFFER_SIZE;
+        _transformStates[idx] = serverState;
     }
 
     public void ProcessLocalPlayerMovement(Vector2 movementInput, Vector2 lookInput)
@@ -218,5 +211,56 @@ public class PlayerNetworkMovement : NetworkBehaviour
         // InputActions.FindActionMap("Player").Disable();
     }
 
-    private void Awake() { }
+    public void TeleportTo(Vector3 pos)
+    {
+        if (IsServer)
+        {
+            transform.position = pos;
+
+            accumulatedRotation = 0f;
+            transform.rotation = Quaternion.identity;
+
+            int newTick = ServerTransformState.Value.HasStartedMoving
+                ? ServerTransformState.Value.Tick + 1
+                : 0;
+
+            TransformState state = new TransformState()
+            {
+                Tick = newTick,
+                Position = pos,
+                Rotation = 0f,
+                HasStartedMoving = true,
+            };
+
+            _previousTransformState = ServerTransformState.Value;
+            ServerTransformState.Value = state;
+
+            int idx = state.Tick % BUFFER_SIZE;
+            _transformStates[idx] = state;
+        }
+
+        if (IsLocalPlayer)
+        {
+            for (int i = 0; i < BUFFER_SIZE; i++)
+            {
+                _inputStates[i] = default;
+                _transformStates[i] = default;
+            }
+
+            accumulatedRotation = 0f;
+            transform.position = pos;
+            transform.rotation = Quaternion.identity;
+
+            TransformState local = new TransformState()
+            {
+                Tick = ServerTransformState.Value.Tick,
+                Position = pos,
+                Rotation = 0f,
+                HasStartedMoving = true,
+            };
+
+            int idx = local.Tick % BUFFER_SIZE;
+            _transformStates[idx] = local;
+        }
+    }
 }
