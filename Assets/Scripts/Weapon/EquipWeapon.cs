@@ -28,11 +28,6 @@ public class EquipWeapon : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        activeWeaponId.OnValueChanged += OnActiveWeaponChanged;
-    }
-
     public void tryEquip(int weaponId)
     {
         if (!IsOwner) return;
@@ -42,19 +37,10 @@ public class EquipWeapon : NetworkBehaviour
     [ServerRpc]
     public void RequestEquipServerRpc(int weaponId)
     {
-        //Check if the weapon is owned.
-        Debug.Log("Validated. Weapon is allowed.");
         activeWeaponId.Value = weaponId;
-    }
-
-    public void OnActiveWeaponChanged(int previous, int next)
-    {
-        //Instantiate
-        Debug.Log("Successfully equiped " + next);
-        Destroy(activeWeaponInstance);
-        if (next == 1)
-        {
-            activeWeaponInstance = Instantiate(pistol, WeaponSpawnerFront);
-        }
+        if(activeWeaponInstance != null) activeWeaponInstance.GetComponent<NetworkObject>().Despawn();
+        activeWeaponInstance = Instantiate(pistol, WeaponSpawnerFront.position, WeaponSpawnerFront.rotation);
+        activeWeaponInstance.GetComponent<NetworkObject>().Spawn();
+        activeWeaponInstance.GetComponent<NetworkObject>().TrySetParent(NetworkObject);
     }
 }
