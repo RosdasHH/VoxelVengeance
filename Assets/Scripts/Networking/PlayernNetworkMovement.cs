@@ -37,6 +37,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [SerializeField]
     float threshold = 0.01f;
 
+    private float accumulatedRotation;
+
     private void OnEnable()
     {
         // InputActions.FindActionMap("Player").Enable();
