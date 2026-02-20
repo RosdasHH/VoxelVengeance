@@ -1,17 +1,13 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionsMenu : MonoBehaviour
+public class OptionsMenu : NetworkBehaviour
 {
     GameObject player;
     PlayerMovement playerMovement;
 
-
-    void Start()
-    {
-        player = transform.parent.gameObject;
-        playerMovement = player.GetComponent<PlayerMovement>();
-    }
+    void Start() { }
 
     void Update()
     {
@@ -20,8 +16,14 @@ public class OptionsMenu : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
     public void SensiSliderChange(Slider slider)
     {
+        if (!player || !playerMovement)
+        {
+            player = NetworkManager.LocalClient.PlayerObject.gameObject;
+            playerMovement = player.GetComponent<PlayerMovement>();
+        }
         playerMovement.rotationSpeed = slider.value;
     }
 }

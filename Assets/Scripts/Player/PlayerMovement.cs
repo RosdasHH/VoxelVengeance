@@ -27,23 +27,21 @@ public class PlayerMovement : NetworkBehaviour
             rb = GetComponent<Rigidbody>();
             Instantiate(camPrefab, camSpawn);
         }
-        else
-        {
-        }
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public void movePlayer(Vector2 movementInput, Vector2 lookInput, float _tickRate)
+    public void MovePlayer(Vector2 movementInput, Vector2 lookInput)
     {
-        float rotationAmount = lookInput.x * rotationSpeed * _tickRate;
+        float deltaTime = Time.fixedDeltaTime;
+        float rotationAmount = lookInput.x * rotationSpeed * deltaTime;
 
         accumulatedRotation += rotationAmount;
         transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
 
         transform.Translate(
-            movementInput.x * _tickRate * speed,
+            movementInput.x * speed * deltaTime,
             0,
-            movementInput.y * _tickRate * speed
+            movementInput.y * speed * deltaTime
         );
     }
 }

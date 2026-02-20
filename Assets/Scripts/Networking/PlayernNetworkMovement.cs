@@ -20,8 +20,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     // private Vector2 movementInput;
 
     private int _tick = 0;
-    private float _tickRate = 1f / 128f;
-    private float _tickDeltaTime = 0f;
+
+    // private float _tickRate = 1f / 128f;
 
     private const int BUFFER_SIZE = 1024;
     private InputState[] _inputStates = new InputState[BUFFER_SIZE];
@@ -73,16 +73,16 @@ public class PlayerNetworkMovement : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (IsClient && IsLocalPlayer)
+        if (IsClient && IsLocalPlayer) //local player prediction
         {
             // movementInput = moveAction.ReadValue<Vector2>();
             Vector2 movementInput = UserInput.MoveInput;
             Vector2 lookInput = UserInput.LookInput;
-            ProcessLocalPlayerMovement(movementInput, lookInput);
+            ProcessLocalPlayerMovement(movementInput, lookInput, Time.fixedDeltaTime);
         }
-        else
+        else // remote players
         {
             ProcessSimulatedPlayerMovement();
         }
@@ -111,16 +111,15 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             //Replay inputs
             var inputs = _inputStates
-                .Where(i => i.Tick > serverState.Tick && (i.MovementInput != Vector2.zero || i.LookInput != Vector2.zero))
+                .Where(i =>
+                    i.Tick > serverState.Tick
+                    && (i.MovementInput != Vector2.zero || i.LookInput != Vector2.zero)
+                )
                 .OrderBy(i => i.Tick);
 
             foreach (var inputState in inputs)
             {
-                playerMovement.movePlayer(
-                    inputState.MovementInput,
-                    inputState.LookInput,
-                    _tickRate
-                );
+                playerMovement.MovePlayer(inputState.MovementInput, inputState.LookInput);
 
                 TransformState newTransformState = new TransformState()
                 {
@@ -145,50 +144,44 @@ public class PlayerNetworkMovement : NetworkBehaviour
         _transformStates[idx] = serverState;
     }
 
-    public void ProcessLocalPlayerMovement(Vector2 movementInput, Vector2 lookInput)
+    public void ProcessLocalPlayerMovement(
+        Vector2 movementInput,
+        Vector2 lookInput,
+        float deltaTime
+    )
     {
-        _tickDeltaTime += Time.deltaTime;
-        if (_tickDeltaTime > _tickRate)
+        int bufferIndex = _tick % BUFFER_SIZE;
+        MovePlayerServerRpc(_tick, movementInput, lookInput);
+        playerMovement.MovePlayer(movementInput, lookInput);
+        InputState inputState = new InputState
         {
-            int bufferIndex = _tick % BUFFER_SIZE;
-            MovePlayerServerRpc(_tick, movementInput, lookInput);
-            playerMovement.movePlayer(movementInput, lookInput, _tickRate);
-            InputState inputState = new InputState
-            {
-                Tick = _tick,
-                MovementInput = movementInput,
-                LookInput = lookInput,
-            };
+            Tick = _tick,
+            MovementInput = movementInput,
+            LookInput = lookInput,
+        };
 
-            TransformState transformState = new TransformState()
-            {
-                Tick = _tick,
-                Position = transform.position,
-                Rotation = transform.eulerAngles.y,
-                HasStartedMoving = true,
-            };
+        TransformState transformState = new TransformState()
+        {
+            Tick = _tick,
+            Position = transform.position,
+            Rotation = transform.eulerAngles.y,
+            HasStartedMoving = true,
+        };
 
-            _inputStates[bufferIndex] = inputState;
-            _transformStates[bufferIndex] = transformState;
+        _inputStates[bufferIndex] = inputState;
+        _transformStates[bufferIndex] = transformState;
 
-            _tickDeltaTime -= _tickRate;
-            _tick++;
-        }
+        _tick++;
     }
 
     public void ProcessSimulatedPlayerMovement()
     {
-        _tickDeltaTime += Time.deltaTime;
-        if (_tickDeltaTime > _tickRate)
+        if (ServerTransformState.Value.HasStartedMoving)
         {
-            if (ServerTransformState.Value.HasStartedMoving)
-            {
-                transform.position = ServerTransformState.Value.Position;
-                transform.rotation = Quaternion.Euler(0, ServerTransformState.Value.Rotation, 0);
-            }
-            _tickDeltaTime -= _tickRate;
-            _tick++;
+            transform.position = ServerTransformState.Value.Position;
+            transform.rotation = Quaternion.Euler(0, ServerTransformState.Value.Rotation, 0);
         }
+        _tick++;
     }
 
     [ServerRpc]
@@ -198,7 +191,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         //{
         //    Debug.Log("Lost a package!");
         //}
-        playerMovement.movePlayer(movementInput, lookInput, _tickRate);
+        playerMovement.MovePlayer(movementInput, lookInput);
         TransformState state = new TransformState()
         {
             Tick = tick,

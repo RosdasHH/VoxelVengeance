@@ -36,8 +36,11 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Pause()
     {
-        player = NetworkManager.LocalClient.PlayerObject.gameObject;
-        userInput = player.GetComponent<UserInput>();
+        if (!player || !userInput)
+        {
+            player = NetworkManager.LocalClient.PlayerObject.gameObject;
+            userInput = player.GetComponent<UserInput>();
+        }
 
         Debug.Log("Pause");
         curMenuActive = true;
@@ -49,8 +52,11 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Unpause()
     {
-        player = NetworkManager.LocalClient.PlayerObject.gameObject;
-        userInput = player.GetComponent<UserInput>();
+        if (!player || !userInput)
+        {
+            player = NetworkManager.LocalClient.PlayerObject.gameObject;
+            userInput = player.GetComponent<UserInput>();
+        }
 
         curMenuActive = false;
         userInput.ToggleInput(true);
@@ -73,6 +79,6 @@ public class PauseMenuManager : NetworkBehaviour
 
     public void LeaveMatchBtn()
     {
-        Unpause();
+        Application.Quit();
     }
 }
