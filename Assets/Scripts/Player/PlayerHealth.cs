@@ -40,10 +40,6 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     private void hitMessageClientRpc(int amount, ulong shooterId, ulong hitPlayerId)
     {
-        Debug.Log("Shooterid " + shooterId);
-        Debug.Log("Ownid " + NetworkManager.LocalClientId);
-        Debug.Log("HitplayerId " + hitPlayerId);
-        Debug.Log(NetworkManager.LocalClientId == shooterId);
         if (NetworkManager.LocalClientId == shooterId)
         {
             spawnDamageNumber(amount, Color.green);
@@ -60,7 +56,7 @@ public class PlayerHealth : NetworkBehaviour
         TextMeshPro inst = Instantiate(damageNumber, generateRandomPositionAround(gameObject.transform.position, 0.5f), gameObject.transform.rotation);
         inst.text = amount.ToString();
         inst.color = color;
-        Destroy(inst, 1f);
+        Destroy(inst.gameObject, 1f);
     }
     private Vector3 generateRandomPositionAround(Vector3 pos, float variation)
     {

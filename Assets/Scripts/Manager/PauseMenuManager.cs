@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,6 +9,9 @@ public class PauseMenuManager : NetworkBehaviour
 
     [SerializeField]
     private GameObject OptionsMenu;
+
+    [SerializeField]
+    private TMP_InputField playerNameInputField;
 
     private GameObject player;
     private UserInput userInput;
@@ -48,6 +52,8 @@ public class PauseMenuManager : NetworkBehaviour
         canvas.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         UserInput.playerInput.SwitchCurrentActionMap("UI");
+        NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
+        playerNameInputField.text = nameAss.playerName.Value.ToString();
     }
 
     void Unpause()
@@ -64,6 +70,8 @@ public class PauseMenuManager : NetworkBehaviour
         OptionsMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         UserInput.playerInput.SwitchCurrentActionMap("Player");
+        NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
+        nameAss.changeName(playerNameInputField.text);
     }
 
     public void ContinueBtn()
