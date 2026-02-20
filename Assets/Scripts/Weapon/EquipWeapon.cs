@@ -1,28 +1,40 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class EquipWeapon : NetworkBehaviour
 {
-    public NetworkVariable<int> activeWeaponId = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> activeWeaponId = new NetworkVariable<int>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
     private InputAction firstSlotAction;
 
     [SerializeField]
     private GameObject pistol;
+
     [SerializeField]
     private Transform WeaponSpawnerFront;
 
     public GameObject activeWeaponInstance;
 
+    private GameObject WeaponCanvas;
+    private GameObject Crosshair;
+
     private void Awake()
     {
+        WeaponCanvas = GameObject.FindGameObjectWithTag("WeaponCanvas");
+        Crosshair = WeaponCanvas.transform.Find("Crosshair").gameObject;
         firstSlotAction = InputSystem.actions.FindAction("FirstSlot");
     }
 
     private void Update()
     {
-        if (!IsOwner || !IsClient) return;
-        if(firstSlotAction.WasPressedThisFrame())
+        if (!IsOwner || !IsClient)
+            return;
+        if (firstSlotAction.WasPressedThisFrame())
         {
             tryEquip(1);
         }
@@ -30,16 +42,25 @@ public class EquipWeapon : NetworkBehaviour
 
     public void tryEquip(int weaponId)
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+            return;
         RequestEquipServerRpc(weaponId);
+        //equipped weapon??
+        // Image crosshairImg = Crosshair.GetComponent<Image>();
+        // crosshairImg.sprite = activeWeaponInstance.GetComponent<WeaponData>().crosshair;
     }
 
     [ServerRpc]
     public void RequestEquipServerRpc(int weaponId)
     {
         activeWeaponId.Value = weaponId;
-        if(activeWeaponInstance != null) activeWeaponInstance.GetComponent<NetworkObject>().Despawn();
-        activeWeaponInstance = Instantiate(pistol, WeaponSpawnerFront.position, WeaponSpawnerFront.rotation);
+        if (activeWeaponInstance != null)
+            activeWeaponInstance.GetComponent<NetworkObject>().Despawn();
+        activeWeaponInstance = Instantiate(
+            pistol,
+            WeaponSpawnerFront.position,
+            WeaponSpawnerFront.rotation
+        );
         activeWeaponInstance.GetComponent<NetworkObject>().Spawn();
         activeWeaponInstance.GetComponent<NetworkObject>().TrySetParent(NetworkObject);
     }
