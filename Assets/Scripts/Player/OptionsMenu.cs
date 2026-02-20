@@ -24,6 +24,6 @@ public class OptionsMenu : NetworkBehaviour
             player = NetworkManager.LocalClient.PlayerObject.gameObject;
             playerMovement = player.GetComponent<PlayerMovement>();
         }
-        playerMovement.rotationSpeed = slider.value;
+        player.GetComponent<PlayerMovement>().setSensitivity(slider.value);
     }
 }

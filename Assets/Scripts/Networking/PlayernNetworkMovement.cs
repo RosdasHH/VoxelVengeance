@@ -73,14 +73,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (IsClient && IsLocalPlayer) //local player prediction
         {
             // movementInput = moveAction.ReadValue<Vector2>();
             Vector2 movementInput = UserInput.MoveInput;
             Vector2 lookInput = UserInput.LookInput;
-            ProcessLocalPlayerMovement(movementInput, lookInput, Time.fixedDeltaTime);
+            ProcessLocalPlayerMovement(movementInput, lookInput, Time.deltaTime);
         }
         else // remote players
         {

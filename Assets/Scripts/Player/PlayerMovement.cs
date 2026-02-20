@@ -44,4 +44,14 @@ public class PlayerMovement : NetworkBehaviour
             movementInput.y * speed * deltaTime
         );
     }
+    public void setSensitivity(float value)
+    {
+        rotationSpeed = value;
+        setSensitivityServerRpc(value);
+    }
+    [ServerRpc]
+    public void setSensitivityServerRpc(float value)
+    {
+        rotationSpeed = value;
+    }
 }
