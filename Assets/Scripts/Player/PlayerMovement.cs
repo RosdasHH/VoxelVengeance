@@ -13,6 +13,13 @@ public class PlayerMovement : NetworkBehaviour
 
     Rigidbody rb;
 
+    [SerializeField]
+    private float speed;
+
+    [SerializeField]
+    public float rotationSpeed;
+    private float accumulatedRotation;
+
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
@@ -28,15 +35,17 @@ public class PlayerMovement : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void FixedUpdate()
+    public void movePlayer(Vector2 movementInput, Vector2 lookInput, float _tickRate)
     {
-        Vector2 moveValue = UserInput.MoveInput;
-        Vector3 direction = new Vector3(moveValue.x, 0f, moveValue.y).normalized;
-        Vector3 acceleration = Vector3.zero;
+        float rotationAmount = lookInput.x * rotationSpeed * _tickRate;
 
-        if (direction.magnitude >= .1f)
-        {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-        }
+        accumulatedRotation += rotationAmount;
+        transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
+
+        transform.Translate(
+            movementInput.x * _tickRate * speed,
+            0,
+            movementInput.y * _tickRate * speed
+        );
     }
 }

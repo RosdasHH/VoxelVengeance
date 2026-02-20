@@ -6,25 +6,27 @@ public class Shoot : NetworkBehaviour
 {
     [SerializeField]
     private GameObject Bullet;
+
     [SerializeField]
     Transform BulletSpawnPoint;
 
     private EquipWeapon equipWeapon;
 
-    private InputAction shootAction;
     private void Awake()
     {
-        shootAction = InputSystem.actions.FindAction("Attack");
         equipWeapon = GetComponent<EquipWeapon>();
     }
+
     private void Update()
     {
-        if (!equipWeapon.IsOwner) return;
-        if(shootAction.WasPressedThisFrame())
+        if (!equipWeapon.IsOwner)
+            return;
+        if (UserInput.WasShootPressed)
         {
             shoot();
         }
     }
+
     private void shoot()
     {
         ShootServerRpc();
