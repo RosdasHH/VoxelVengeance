@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -55,13 +56,18 @@ public class PlayerNetworkMovement : NetworkBehaviour
         if (playerMovement == null)
             playerMovement = GetComponentInChildren<PlayerMovement>();
 
-        if (playerMovement == null)
-            Debug.LogError("PlayerMovement missing");
-
         if (IsOwner)
         {
+            playerInput.enabled = true;
+            playerInput.ActivateInput();
+
             moveAction = playerInput.actions["Move"];
             moveAction.Enable();
+            GetComponent<UserInput>().enabled = true;
+        }
+        else
+        {
+            playerInput.enabled = false;
         }
 
         base.OnNetworkSpawn();
@@ -206,7 +212,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void OnDisable()
     {
-        // InputActions.FindActionMap("Player").Disable();
+        ServerTransformState.OnValueChanged -= OnServerStateChange;
     }
 
     public void TeleportTo(Vector3 pos)

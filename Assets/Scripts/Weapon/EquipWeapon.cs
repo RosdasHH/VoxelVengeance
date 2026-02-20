@@ -12,7 +12,7 @@ public class EquipWeapon : NetworkBehaviour
     [SerializeField]
     private Transform WeaponSpawnerFront;
 
-    private GameObject activeWeaponInstance;
+    public GameObject activeWeaponInstance;
 
     private void Awake()
     {
@@ -21,10 +21,9 @@ public class EquipWeapon : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner || !IsClient) return;
         if(firstSlotAction.WasPressedThisFrame())
         {
-            Debug.Log("Request to equip Pistol.");
             tryEquip(1);
         }
     }

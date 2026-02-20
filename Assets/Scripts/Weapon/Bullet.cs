@@ -7,7 +7,7 @@ public class Bullet : NetworkBehaviour
     private float tickTimer;
     private float bulletSpeed = 40f;
 
-    void Update()
+    void FixedUpdate()
     {
         if (!IsServer) return;
         tickTimer += Time.deltaTime;

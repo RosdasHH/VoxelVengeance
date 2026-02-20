@@ -4,13 +4,8 @@ using UnityEngine.InputSystem;
 
 public class Shoot : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject Bullet;
-
-    [SerializeField]
-    Transform BulletSpawnPoint;
-
     private EquipWeapon equipWeapon;
+    private float _timer;
 
     private void Awake()
     {
@@ -19,11 +14,13 @@ public class Shoot : NetworkBehaviour
 
     private void Update()
     {
-        if (!equipWeapon.IsOwner)
+        if (!IsOwner || !IsClient || equipWeapon == null || equipWeapon.activeWeaponInstance == null)
             return;
-        if (UserInput.WasShootPressed)
+        _timer += Time.deltaTime;
+        if (UserInput.WasShootPressed && _timer >= 0.3)
         {
             shoot();
+            _timer = 0;
         }
     }
 
@@ -35,8 +32,26 @@ public class Shoot : NetworkBehaviour
     [ServerRpc]
     public void ShootServerRpc()
     {
-        GameObject instance = Instantiate(Bullet, BulletSpawnPoint.transform.position, BulletSpawnPoint.transform.rotation);
-        NetworkObject net = instance.GetComponent<NetworkObject>();
-        net.SpawnWithOwnership(OwnerClientId);
+        WeaponData weapondata = null;
+        try
+        {
+            weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
+        } catch { }
+        if (weapondata != null)
+        {
+            GameObject bullet = weapondata.bullet;
+            Transform spawnPoint = weapondata.bulletSpawn;
+            GameObject instance = Instantiate(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation);
+            NetworkObject net = instance.GetComponent<NetworkObject>();
+            net.SpawnWithOwnership(OwnerClientId);
+            weaponAnimationClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    public void weaponAnimationClientRpc()
+    {
+        Animator anim = equipWeapon.GetComponentInChildren<Animator>();
+        anim.SetTrigger("shoot");
     }
 }

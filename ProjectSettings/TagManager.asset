@@ -6,6 +6,7 @@ TagManager:
   tags:
   - NetworkManager
   - GameManager
+  - Cams
   layers:
   - Default
   - TransparentFX

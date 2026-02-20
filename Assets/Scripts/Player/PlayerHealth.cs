@@ -22,7 +22,6 @@ public class PlayerHealth : NetworkBehaviour
         if (newValue <= 0)
         {
             Vector3 randomSpawnPos = GameObject.FindWithTag("GameManager").GetComponent<Spawn>().getRandomSpawnPosition();
-            Debug.LogError(randomSpawnPos);
             gameObject.GetComponent<PlayerNetworkMovement>().TeleportTo(randomSpawnPos);
             health.Value = 50;
         }

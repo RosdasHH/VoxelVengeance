@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [SerializeField]
-    private CinemachineCamera cam;
-
-    [SerializeField]
-    private AudioListener listener;
-
     Rigidbody rb;
+
+    [SerializeField]
+    private Transform camSpawn;
+
+    [SerializeField]
+    private Camera camPrefab;
 
     [SerializeField]
     private float speed;
@@ -24,13 +24,11 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (IsOwner)
         {
-            listener.enabled = true;
-            cam.Priority = 1;
             rb = GetComponent<Rigidbody>();
+            Instantiate(camPrefab, camSpawn);
         }
         else
         {
-            cam.Priority = 0;
         }
         Cursor.lockState = CursorLockMode.Locked;
     }
