@@ -38,8 +38,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [SerializeField]
     float threshold = 0.01f;
 
-    private float accumulatedRotation;
-
     private void OnEnable()
     {
         // InputActions.FindActionMap("Player").Enable();
@@ -141,7 +139,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         transform.position = serverState.Position;
         playerMovement.velocity = serverState.Velocity;
         transform.rotation = Quaternion.Euler(0, serverState.Rotation, 0);
-        accumulatedRotation = serverState.Rotation;
+        playerMovement.accumulatedRotation = serverState.Rotation;
 
         int idx = serverState.Tick % BUFFER_SIZE;
         _transformStates[idx] = serverState;
@@ -224,7 +222,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             transform.position = pos;
 
-            accumulatedRotation = 0f;
+            playerMovement.accumulatedRotation = 0f;
             transform.rotation = Quaternion.identity;
 
             int newTick = ServerTransformState.Value.HasStartedMoving
@@ -255,7 +253,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
                 _transformStates[i] = default;
             }
 
-            accumulatedRotation = 0f;
+            playerMovement.accumulatedRotation = 0f;
             transform.position = pos;
             transform.rotation = Quaternion.identity;
 

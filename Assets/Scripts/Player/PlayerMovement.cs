@@ -27,7 +27,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField]
     public float rotationSpeed;
-    private float accumulatedRotation;
+    public float accumulatedRotation;
 
     public override void OnNetworkSpawn()
     {

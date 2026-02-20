@@ -3470,7 +3470,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 582340425}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
-        m_MethodName: ContinueBtn
+        m_MethodName: LeaveMatchBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6641,7 +6641,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8057731206063636600, guid: 7285842764d7a4153bf82dcab725d5be, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 7285842764d7a4153bf82dcab725d5be, type: 3}
 --- !u!1001 &2103554984
 PrefabInstance:
