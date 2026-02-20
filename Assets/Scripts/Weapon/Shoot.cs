@@ -14,7 +14,7 @@ public class Shoot : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !IsClient || equipWeapon == null || equipWeapon.activeWeaponInstance == null)
+        if (!IsOwner || !IsClient || equipWeapon == null)
             return;
         _timer += Time.deltaTime;
         if (UserInput.WasShootPressed && _timer >= 0.3)
