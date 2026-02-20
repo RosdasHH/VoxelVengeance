@@ -29,8 +29,9 @@ public class Bullet : NetworkBehaviour
         if(!IsServer) return;
         if (other.gameObject.CompareTag("Player"))
         {
-            if (other.GetComponent<NetworkObject>().OwnerClientId == OwnerClientId) return;
-            other.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10);
+            ulong hitPlayerId = other.GetComponent<NetworkObject>().OwnerClientId;
+            if (hitPlayerId == OwnerClientId) return;
+            other.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10, OwnerClientId, hitPlayerId);
         }
         NetworkObject.Despawn(true);
     }

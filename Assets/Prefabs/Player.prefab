@@ -245,6 +245,7 @@ MonoBehaviour:
   accelerationSpeed: 8
   damping: 10
   rotationSpeed: 12
+  accumulatedRotation: 0
 --- !u!114 &5342538032089529281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +334,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   health:
     m_InternalValue: 50
+  damageNumber: {fileID: 3006967252721979383, guid: 3fc607d00d5bc454d9ed2fdad2456c77, type: 3}
 --- !u!114 &-4099477330001557804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,7 +576,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: awf
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
