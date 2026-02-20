@@ -15,7 +15,7 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Start()
     {
-        player = transform.parent.gameObject;
+        player = NetworkManager.LocalClient.PlayerObject.gameObject;
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
         userInput = player.GetComponent<UserInput>();

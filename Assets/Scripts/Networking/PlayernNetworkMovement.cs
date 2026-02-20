@@ -52,12 +52,18 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
-            return;
+        if (playerMovement == null)
+            playerMovement = GetComponentInChildren<PlayerMovement>();
 
-        moveAction = playerInput.actions["Move"];
-        moveAction.Enable();
-        playerMovement = GetComponent<PlayerMovement>();
+        if (playerMovement == null)
+            Debug.LogError("PlayerMovement missing");
+
+        if (IsOwner)
+        {
+            moveAction = playerInput.actions["Move"];
+            moveAction.Enable();
+        }
+
         base.OnNetworkSpawn();
     }
 
@@ -104,12 +110,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             foreach (var inputState in inputs)
             {
-                if (playerMovement == null)
-                {
-                    playerMovement = GetComponent<PlayerMovement>();
-                    Debug.LogError("PlayerMovement missing on server prefab!");
-                    return;
-                }
                 playerMovement.movePlayer(
                     inputState.MovementInput,
                     inputState.LookInput,
@@ -146,12 +146,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             int bufferIndex = _tick % BUFFER_SIZE;
             MovePlayerServerRpc(_tick, movementInput, lookInput);
-            if (playerMovement == null)
-            {
-                playerMovement = GetComponent<PlayerMovement>();
-                Debug.LogError("PlayerMovement missing on server prefab!");
-                return;
-            }
             playerMovement.movePlayer(movementInput, lookInput, _tickRate);
             InputState inputState = new InputState
             {
@@ -198,12 +192,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
         //{
         //    Debug.Log("Lost a package!");
         //}
-        if (playerMovement == null)
-        {
-            playerMovement = GetComponent<PlayerMovement>();
-            Debug.LogError("PlayerMovement missing on server prefab!");
-            return;
-        }
         playerMovement.movePlayer(movementInput, lookInput, _tickRate);
         TransformState state = new TransformState()
         {
