@@ -1,3 +1,4 @@
+using System.Text;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -26,7 +27,7 @@ public class NetworkingUI : MonoBehaviour
         utp.ConnectionData.Address = "127.0.0.1";
         utp.ConnectionData.Port = 6767;
 
-        nm.StartClient();
+        Connect();
     }
 
     public void ConnectClientExternal()
@@ -34,6 +35,11 @@ public class NetworkingUI : MonoBehaviour
         utp.ConnectionData.Address = "12n.ddns.wtf";
         utp.ConnectionData.Port = 6767;
 
+        Connect();
+    }
+
+    private void Connect()
+    {
         nm.StartClient();
     }
 

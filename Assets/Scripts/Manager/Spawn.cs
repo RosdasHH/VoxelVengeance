@@ -1,3 +1,4 @@
+using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ public class Spawn : MonoBehaviour
     {
         Transform spawnPoints = transform.Find("SpawnPoints");
         int spawnPointLength = spawnPoints.childCount;
-        int randomIndex = Random.Range(1, spawnPointLength);
+        int randomIndex = Random.Range(0, spawnPointLength);
         Transform spawnpoint = spawnPoints.GetChild(randomIndex);
         return spawnpoint.position;
     }
