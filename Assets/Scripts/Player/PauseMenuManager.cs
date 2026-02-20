@@ -5,6 +5,7 @@ public class PauseMenuManager : NetworkBehaviour
 {
     [SerializeField]
     private GameObject canvas;
+
     [SerializeField]
     private GameObject OptionsMenu;
 
@@ -13,18 +14,16 @@ public class PauseMenuManager : NetworkBehaviour
 
     private bool curMenuActive = false;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        player = NetworkManager.LocalClient.PlayerObject.gameObject;
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
-        userInput = player.GetComponent<UserInput>();
     }
 
     void Update()
     {
-        if (!IsLocalPlayer)
-            return;
+        // if (!IsLocalPlayer)
+        //     return;
         if (UserInput.WasEscapePressed && !curMenuActive)
         {
             Pause();
@@ -37,6 +36,9 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Pause()
     {
+        player = NetworkManager.LocalClient.PlayerObject.gameObject;
+        userInput = player.GetComponent<UserInput>();
+
         Debug.Log("Pause");
         curMenuActive = true;
         userInput.ToggleInput(false);
@@ -47,21 +49,28 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Unpause()
     {
+        player = NetworkManager.LocalClient.PlayerObject.gameObject;
+        userInput = player.GetComponent<UserInput>();
+
         curMenuActive = false;
         userInput.ToggleInput(true);
         canvas.SetActive(false);
+        OptionsMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         UserInput.playerInput.SwitchCurrentActionMap("Player");
     }
+
     public void ContinueBtn()
     {
         Unpause();
     }
+
     public void OptionsBtn()
     {
         canvas.SetActive(false);
         OptionsMenu.SetActive(true);
     }
+
     public void LeaveMatchBtn()
     {
         Unpause();
