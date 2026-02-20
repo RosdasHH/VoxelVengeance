@@ -131,7 +131,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3163006219648596961}
   - component: {fileID: 106946503319271096}
-  - component: {fileID: 3474000379554324234}
   - component: {fileID: -5395613126061688533}
   - component: {fileID: 4522997298007046469}
   - component: {fileID: 2184842156633436658}
@@ -240,8 +239,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   camSpawn: {fileID: 4322014929907835203}
   camPrefab: {fileID: 8737371990667519030, guid: 376d170897a965d4d9eff3d9a23940db, type: 3}
-  speed: 50
-  accelerationSpeed: 10
+  speed: 10
+  accelerationSpeed: 8
+  damping: 10
   rotationSpeed: 12
 --- !u!114 &5342538032089529281
 MonoBehaviour:

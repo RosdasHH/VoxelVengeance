@@ -16,8 +16,14 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private float speed;
 
+    [System.NonSerialized]
+    public Vector3 velocity = Vector3.zero;
+
     [SerializeField]
     private float accelerationSpeed;
+
+    [SerializeField]
+    private float damping;
 
     [SerializeField]
     public float rotationSpeed;
@@ -33,37 +39,39 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    public void MovePlayer(Vector2 movementInput, Vector2 lookInput)
+    public void MovePlayer(Vector2 movementInput, Vector2 lookInput, float tickDelta)
     {
-        float deltaTime = Time.fixedDeltaTime;
-        float rotationAmount = lookInput.x * rotationSpeed * deltaTime;
+        float rotationAmount = lookInput.x * rotationSpeed * tickDelta;
 
         accumulatedRotation += rotationAmount;
         transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
 
         if (movementInput.magnitude >= 0.1f)
         {
-            Vector3 targetVelocity =
-                new Vector3(movementInput.x, 0f, movementInput.y).normalized * speed;
-            Vector3 curVelocity = rb.linearVelocity;
+            Vector3 inputDir = new Vector3(movementInput.x, 0f, movementInput.y);
+            Vector3 targetVelocity = transform.TransformDirection(inputDir.normalized) * speed;
+            Vector3 curVelocity = velocity;
             curVelocity.y = 0f;
 
             Vector3 velocityError = targetVelocity - curVelocity;
-            Vector3 acceleration = velocityError * accelerationSpeed * deltaTime;
-            rb.AddForce(acceleration, ForceMode.Acceleration);
+            Vector3 acceleration = velocityError * accelerationSpeed * tickDelta;
+            velocity += acceleration;
         }
-
-        // transform.Translate(
-        //     movementInput.x * speed * deltaTime,
-        //     0,
-        //     movementInput.y * speed * deltaTime
-        // );
+        else
+        {
+            // damping
+            velocity = Vector3.Lerp(velocity, Vector3.zero, damping * tickDelta);
+        }
+        if(velocity.sqrMagnitude < 0.001f) velocity = Vector3.zero;
+        transform.position += velocity * tickDelta;
     }
+
     public void setSensitivity(float value)
     {
         rotationSpeed = value;
         setSensitivityServerRpc(value);
     }
+
     [ServerRpc]
     public void setSensitivityServerRpc(float value)
     {

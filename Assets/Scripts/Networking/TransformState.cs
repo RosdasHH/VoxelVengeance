@@ -6,6 +6,7 @@ public struct TransformState : INetworkSerializable, IEquatable<TransformState>
 {
     public int Tick;
     public Vector3 Position;
+    public Vector3 Velocity;
     public float Rotation;
     public bool HasStartedMoving;
 
@@ -14,6 +15,7 @@ public struct TransformState : INetworkSerializable, IEquatable<TransformState>
     {
         serializer.SerializeValue(ref Tick);
         serializer.SerializeValue(ref Position);
+        serializer.SerializeValue(ref Velocity);
         serializer.SerializeValue(ref Rotation);
         serializer.SerializeValue(ref HasStartedMoving);
     }
@@ -22,6 +24,7 @@ public struct TransformState : INetworkSerializable, IEquatable<TransformState>
     {
         return Tick == other.Tick
             && Position.Equals(other.Position)
+            && Velocity.Equals(other.Velocity)
             && Rotation.Equals(other.Rotation)
             && HasStartedMoving == other.HasStartedMoving;
     }
@@ -29,5 +32,5 @@ public struct TransformState : INetworkSerializable, IEquatable<TransformState>
     public override bool Equals(object obj) => obj is TransformState other && Equals(other);
 
     public override int GetHashCode() =>
-        HashCode.Combine(Tick, Position, Rotation, HasStartedMoving);
+        HashCode.Combine(Tick, Position, Velocity, Rotation, HasStartedMoving);
 }
