@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.Text;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -7,6 +8,7 @@ public class NetworkingUI : MonoBehaviour
 {
     private NetworkManager nm;
     private UnityTransport utp;
+    [SerializeField] private Canvas canvas;
 
     private void Awake()
     {
@@ -20,6 +22,7 @@ public class NetworkingUI : MonoBehaviour
         utp.ConnectionData.Port = 6767;
 
         nm.StartServer();
+        disableCanvas();
     }
     public void StartHost()
     {
@@ -27,6 +30,7 @@ public class NetworkingUI : MonoBehaviour
         utp.ConnectionData.Port = 6767;
 
         nm.StartHost();
+        disableCanvas();
     }
 
     public void ConnectClientLocal()
@@ -48,6 +52,11 @@ public class NetworkingUI : MonoBehaviour
     private void Connect()
     {
         nm.StartClient();
+        disableCanvas();
+    }
+    private void disableCanvas()
+    {
+        canvas.enabled = false;
     }
 
     private void OnApplicationQuit()

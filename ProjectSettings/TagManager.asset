@@ -8,6 +8,7 @@ TagManager:
   - GameManager
   - Cams
   - WeaponCanvas
+  - HudManager
   layers:
   - Default
   - TransparentFX

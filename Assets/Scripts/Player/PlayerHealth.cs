@@ -1,5 +1,8 @@
 using TMPro;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHealth : NetworkBehaviour
@@ -11,23 +14,6 @@ public class PlayerHealth : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (IsServer) health.Value = 50;
-        health.OnValueChanged += OnHealthChanged;
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        health.OnValueChanged -= OnHealthChanged;
-    }
-
-    private void OnHealthChanged(int previousValue, int newValue)
-    {
-        if (!IsServer) return;
-        if (newValue <= 0)
-        {
-            Vector3 randomSpawnPos = GameObject.FindWithTag("GameManager").GetComponent<Spawn>().getRandomSpawnPosition();
-            gameObject.GetComponent<PlayerNetworkMovement>().TeleportTo(randomSpawnPos);
-            health.Value = 50;
-        }
     }
 
     public void decreaseHealth(int amount, ulong shooterId, ulong hitPlayerId)
@@ -35,6 +21,34 @@ public class PlayerHealth : NetworkBehaviour
         if (!IsServer) return;
         health.Value -= amount;
         hitMessageClientRpc(amount, shooterId, hitPlayerId);
+        if (health.Value <= 0)
+        {
+            Vector3 randomSpawnPos = GameObject.FindWithTag("GameManager").GetComponent<Spawn>().getRandomSpawnPosition();
+            gameObject.GetComponent<PlayerNetworkMovement>().TeleportTo(randomSpawnPos);
+            health.Value = 50;
+            sendKillMessageClientRpc(shooterId, hitPlayerId);
+        }
+    }
+
+    [ClientRpc]
+    private void sendKillMessageClientRpc(ulong shooterId, ulong victimId)
+    {
+        if (shooterId == NetworkManager.LocalClientId || victimId == NetworkManager.LocalClientId)
+        {
+            NetworkManager.Singleton.ConnectedClients.TryGetValue(shooterId, out var shooter);
+            NetworkManager.Singleton.ConnectedClients.TryGetValue(victimId, out var victim);
+            string shooterName = shooter.PlayerObject.GetComponent<NameAssignment>().playerName.Value.ToString();
+            string victimName = victim.PlayerObject.GetComponent<NameAssignment>().playerName.Value.ToString();
+            if (NetworkManager.LocalClientId == shooterId)
+            {
+                GameObject.FindWithTag("HudManager").GetComponent<HUD_Manager>().setKillText("You Killed " + victimName, Color.green);
+
+            }
+            else if (NetworkManager.LocalClientId == victimId)
+            {
+                GameObject.FindWithTag("HudManager").GetComponent<HUD_Manager>().setKillText("Killed by " + shooterName, Color.red);
+            }
+        }
     }
 
     [ClientRpc]
