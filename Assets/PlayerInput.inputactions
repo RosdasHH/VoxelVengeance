@@ -97,6 +97,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Slot2",
+                    "type": "Button",
+                    "id": "88c6d449-0066-4686-a678-3ec5662d7f93",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Slot3",
+                    "type": "Button",
+                    "id": "996913e2-ed77-48d9-b677-c3e5fca15555",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Escape",
                     "type": "Button",
                     "id": "efd1c5a3-dbf9-4c10-9311-40961e38a102",
@@ -494,23 +512,34 @@
                 },
                 {
                     "name": "",
-                    "id": "b7132888-81cb-47dc-ba95-a2427d4236d3",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Slot1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5c65f4a1-f7d6-454c-9514-e04e119d5c5c",
                     "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Slot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce2c8820-700b-4076-9c1c-d08403bb6554",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Slot2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1acb753-b5cd-443e-a2c2-e0407adf65bf",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Slot3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
