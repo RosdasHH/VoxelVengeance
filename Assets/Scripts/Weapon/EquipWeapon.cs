@@ -10,13 +10,12 @@ public class EquipWeapon : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
-    private InputAction firstSlotAction;
-
-    [SerializeField]
-    private GameObject pistol;
 
     [SerializeField]
     private Transform WeaponSpawnerFront;
+
+    [SerializeField]
+    public GameObject[] Weapons = new GameObject[3];
 
     public GameObject activeWeaponInstance;
 
@@ -27,7 +26,6 @@ public class EquipWeapon : NetworkBehaviour
     {
         WeaponCanvas = GameObject.FindGameObjectWithTag("WeaponCanvas");
         Crosshair = WeaponCanvas.transform.Find("Crosshair").gameObject;
-        firstSlotAction = InputSystem.actions.FindAction("FirstSlot");
     }
 
     public override void OnNetworkSpawn()
@@ -40,16 +38,21 @@ public class EquipWeapon : NetworkBehaviour
     {
         if (!IsOwner || !IsClient)
             return;
-        if (firstSlotAction.WasPressedThisFrame())
-        {
+        if (UserInput.SlotPressed1)
+            tryEquip(0);
+        else if (UserInput.SlotPressed2)
             tryEquip(1);
-        }
+        else if (UserInput.SlotPressed3)
+            tryEquip(2);
     }
 
     public void tryEquip(int weaponId)
     {
         if (!IsOwner)
             return;
+        if (Weapons[weaponId] == null)
+            return;
+
         RequestEquipServerRpc(weaponId);
         //equipped weapon??
         // Image crosshairImg = Crosshair.GetComponent<Image>();
@@ -70,7 +73,6 @@ public class EquipWeapon : NetworkBehaviour
             activeWeaponInstance = null;
         }
 
-        if (weaponId == 1)
-            activeWeaponInstance = Instantiate(pistol, WeaponSpawnerFront);
+        activeWeaponInstance = Instantiate(Weapons[weaponId], WeaponSpawnerFront);
     }
 }
