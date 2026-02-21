@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class Bullet : NetworkBehaviour
 {
-    private const float TickRate = 1f / 128f;
-    private float tickTimer;
     private float bulletSpeed = 40f;
+    [SerializeField] Vector3 minBounds;
+    [SerializeField] Vector3 maxBounds;
 
     void FixedUpdate()
     {
-        if (!IsServer) return;
-        tickTimer += Time.deltaTime;
+        if(IsServer) transform.position += transform.forward * bulletSpeed * Time.fixedDeltaTime;
+            Vector3 pos = transform.position;
 
-        while (tickTimer >= TickRate)
-        {
-            SimulateTick();
-            tickTimer -= TickRate;
-        }
+    if (pos.x < minBounds.x || pos.x > maxBounds.x ||
+        pos.z < minBounds.z || pos.z > maxBounds.z)
+    {
+        NetworkObject.Despawn(true);
+    }
     }
 
-    void SimulateTick()
+    private void Update()
     {
-        transform.position += transform.forward * TickRate * bulletSpeed;
+        if(IsClient && !IsHost) transform.position += transform.forward * bulletSpeed * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,6 +33,6 @@ public class Bullet : NetworkBehaviour
             if (hitPlayerId == OwnerClientId) return;
             other.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10, OwnerClientId, hitPlayerId);
         }
-        NetworkObject.Despawn(true);
+        if(NetworkObject.IsSpawned) NetworkObject.Despawn(true);
     }
 }

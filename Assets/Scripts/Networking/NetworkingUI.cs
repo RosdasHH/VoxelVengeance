@@ -21,6 +21,13 @@ public class NetworkingUI : MonoBehaviour
 
         nm.StartServer();
     }
+    public void StartHost()
+    {
+        utp.ConnectionData.ServerListenAddress = "0.0.0.0";
+        utp.ConnectionData.Port = 6767;
+
+        nm.StartHost();
+    }
 
     public void ConnectClientLocal()
     {

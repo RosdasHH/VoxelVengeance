@@ -17,8 +17,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     PlayerMovement playerMovement;
 
-    // private Vector2 movementInput;
-
     private int _tick = 0;
     private float _tickRate = 1f / 128f;
     private float _tickDeltaTime = 0f;
@@ -40,7 +38,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void OnEnable()
     {
-        // InputActions.FindActionMap("Player").Enable();
         ServerTransformState.OnValueChanged += OnServerStateChange;
     }
 
@@ -75,7 +72,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
     {
         if (IsClient && IsLocalPlayer)
         {
-            // movementInput = moveAction.ReadValue<Vector2>();
             Vector2 movementInput = UserInput.MoveInput;
             Vector2 lookInput = UserInput.LookInput;
             ProcessLocalPlayerMovement(movementInput, lookInput);
@@ -88,7 +84,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void OnServerStateChange(TransformState previousValue, TransformState serverState)
     {
-        if (!IsLocalPlayer)
+        if (!IsLocalPlayer || IsHost)
             return;
 
         _previousTransformState = serverState;
@@ -152,13 +148,17 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             int bufferIndex = _tick % BUFFER_SIZE;
             MovePlayerServerRpc(_tick, movementInput, lookInput);
-            playerMovement.MovePlayer(movementInput, lookInput, _tickRate);
             InputState inputState = new InputState
             {
                 Tick = _tick,
                 MovementInput = movementInput,
                 LookInput = lookInput,
             };
+
+            if(!IsServer)
+            {
+                playerMovement.MovePlayer(movementInput, lookInput, _tickRate);
+            }
 
             TransformState transformState = new TransformState()
             {
