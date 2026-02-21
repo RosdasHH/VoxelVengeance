@@ -57,6 +57,7 @@ public class Shoot : NetworkBehaviour
             weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
             ParticleSystem inst = Instantiate(weapondata.MuzzleFlash, weapondata.bulletSpawn.transform.position, weapondata.bulletSpawn.transform.rotation);
             Destroy(inst.gameObject, 0.3f);
+            equipWeapon.activeWeaponInstance.GetComponent<AudioPlayer>().playSoundWithVariation();
         }
         catch { }
         Animator anim = equipWeapon.GetComponentInChildren<Animator>();
