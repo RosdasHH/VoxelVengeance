@@ -85,8 +85,8 @@ public class PlayerMovement : NetworkBehaviour
         {
             if (remaining.sqrMagnitude < 0.000001f)
                 break;
-            Vector3 p1 = pos + Vector3.up * radius;
-            Vector3 p2 = pos + Vector3.up * (height - radius);
+            Vector3 p1 = new Vector3(pos.x, pos.y-height/2, pos.z) + Vector3.up * radius;
+            Vector3 p2 = new Vector3(pos.x, pos.y-height/2, pos.z) + Vector3.up * (height - radius);
 
 
             if (
