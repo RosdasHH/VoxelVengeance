@@ -37,7 +37,8 @@ public class PlayerMovement : NetworkBehaviour
             Camera.main.transform.localRotation = Quaternion.identity;
             Cursor.lockState = CursorLockMode.Locked;
             listener.enabled = true;
-        } else
+        }
+        else
         {
             listener.enabled = false;
         }
@@ -64,10 +65,34 @@ public class PlayerMovement : NetworkBehaviour
         else
         {
             // damping
-            velocity = Vector3.Lerp(velocity, Vector3.zero, damping * tickDelta);
+            velocity *= 1f / (1f + damping * tickDelta);
         }
-        if(velocity.sqrMagnitude < 0.001f) velocity = Vector3.zero;
-        transform.position += velocity * tickDelta;
+        if (velocity.sqrMagnitude < 0.001f)
+            velocity = Vector3.zero;
+        
+        //wall collide and slide
+        Vector3 displacement =  velocity * tickDelta;
+
+        float radius = 0.5f;
+        float height = 2.5f;
+
+        Vector3 p1 = transform.position + Vector3.up * radius;
+        Vector3 p2 = transform.position + Vector3.up * (height - radius);
+
+        if(Physics.CapsuleCast(p1,p2, radius, displacement.normalized, out RaycastHit hit, displacement.magnitude))
+        {
+            //move to wall
+            Vector3 move = displacement.normalized * (hit.distance - 0.01f);
+            transform.position += move;
+
+            //slide along wall
+            Vector3 slide = Vector3.ProjectOnPlane(displacement, hit.normal);
+            transform.position += slide;
+        }
+        else
+        {
+            transform.position += displacement;
+        }
     }
 
     public void setSensitivity(float value)
