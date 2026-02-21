@@ -12,8 +12,6 @@ using UnityEngine.UIElements;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
-    private PlayerInput playerInput;
-    private InputAction moveAction;
 
     PlayerMovement playerMovement;
 
