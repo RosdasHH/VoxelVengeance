@@ -12,8 +12,6 @@ using UnityEngine.UIElements;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
-    private PlayerInput playerInput;
-    private InputAction moveAction;
 
     PlayerMovement playerMovement;
 
@@ -43,8 +41,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
-        playerInput.enabled = false;
         GetComponent<UserInput>().enabled = false;
     }
 
@@ -55,11 +51,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         if (IsOwner)
         {
-            playerInput.enabled = true;
-            playerInput.ActivateInput();
-
-            moveAction = playerInput.actions["Move"];
-            moveAction.Enable();
             GetComponent<UserInput>().enabled = true;
         }
 
