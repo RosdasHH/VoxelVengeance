@@ -21,11 +21,17 @@ public class EquipWeapon : NetworkBehaviour
 
     private GameObject WeaponCanvas;
     private GameObject Crosshair;
+    private LayerMask _ground;
+    private float range;
 
     private void Awake()
     {
         WeaponCanvas = GameObject.FindGameObjectWithTag("WeaponCanvas");
+        if (!WeaponCanvas)
+            Debug.LogError("weapon canvas not found");
         Crosshair = WeaponCanvas.transform.Find("Crosshair").gameObject;
+        if (!Crosshair)
+            Debug.LogError("weapon canvas not found");
     }
 
     public override void OnNetworkSpawn()
@@ -44,6 +50,17 @@ public class EquipWeapon : NetworkBehaviour
             tryEquip(1);
         else if (UserInput.SlotPressed3)
             tryEquip(2);
+
+        if (Crosshair && activeWeaponInstance)
+        {
+            PlaceCrosshair();
+        }
+    }
+    void PlaceCrosshair()
+    {
+        //cast ray forwards from weapon
+        // Vector3 origin = activeWeaponInstance.transform.position;
+        // bool hitInfoStraight = Physics.Linecast(origin, activeWeaponInstance.)
     }
 
     public void tryEquip(int weaponId)
@@ -54,9 +71,6 @@ public class EquipWeapon : NetworkBehaviour
             return;
 
         RequestEquipServerRpc(weaponId);
-        //equipped weapon??
-        // Image crosshairImg = Crosshair.GetComponent<Image>();
-        // crosshairImg.sprite = activeWeaponInstance.GetComponent<WeaponData>().crosshair;
     }
 
     [ServerRpc]
@@ -74,5 +88,7 @@ public class EquipWeapon : NetworkBehaviour
         }
 
         activeWeaponInstance = Instantiate(Weapons[weaponId], WeaponSpawnerFront);
+        Image crosshairImg = Crosshair.GetComponent<Image>();
+        crosshairImg.sprite = activeWeaponInstance.GetComponent<WeaponData>().crosshair;
     }
 }
