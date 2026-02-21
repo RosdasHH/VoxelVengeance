@@ -312,6 +312,7 @@ MonoBehaviour:
   - {fileID: 6546418285445525246, guid: 0d772446152b94e2ba4bdffba1e3007a, type: 3}
   - {fileID: 0}
   activeWeaponInstance: {fileID: 0}
+  _bulletLayerInt: 6
 --- !u!114 &4300491687583123421
 MonoBehaviour:
   m_ObjectHideFlags: 0

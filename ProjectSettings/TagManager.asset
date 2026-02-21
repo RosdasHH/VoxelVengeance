@@ -9,14 +9,16 @@ TagManager:
   - Cams
   - WeaponCanvas
   - HudManager
+  - WallCrosshair
+  - GroundCrosshair
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
-  - 
+  - Bullet
   - 
   - 
   - 
