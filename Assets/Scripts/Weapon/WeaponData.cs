@@ -7,4 +7,14 @@ public class WeaponData : MonoBehaviour
     public Sprite crosshair;
     public float crosshairRange;
     public ParticleSystem MuzzleFlash;
+    public WeaponPosition weaponPosition;
+    public int damage;
+    public float cooldown;
+    public bool autofire;
+    public float bloom;
+    public enum WeaponPosition
+    {
+        Front,
+        Side
+    };
 }
