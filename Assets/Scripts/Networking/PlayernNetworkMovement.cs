@@ -44,6 +44,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        playerInput.enabled = false;
+        GetComponent<UserInput>().enabled = false;
     }
 
     public override void OnNetworkSpawn()
@@ -59,10 +61,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
             moveAction = playerInput.actions["Move"];
             moveAction.Enable();
             GetComponent<UserInput>().enabled = true;
-        }
-        else
-        {
-            playerInput.enabled = false;
         }
 
         base.OnNetworkSpawn();
