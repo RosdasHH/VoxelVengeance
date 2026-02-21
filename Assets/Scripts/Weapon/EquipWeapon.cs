@@ -30,6 +30,12 @@ public class EquipWeapon : NetworkBehaviour
         firstSlotAction = InputSystem.actions.FindAction("FirstSlot");
     }
 
+    public override void OnNetworkSpawn()
+    {
+        activeWeaponId.OnValueChanged += (pre, post) => SpawnWeaponLocal(post);
+        SpawnWeaponLocal(activeWeaponId.Value);
+    }
+
     private void Update()
     {
         if (!IsOwner || !IsClient)
@@ -54,14 +60,17 @@ public class EquipWeapon : NetworkBehaviour
     public void RequestEquipServerRpc(int weaponId)
     {
         activeWeaponId.Value = weaponId;
+    }
+
+    private void SpawnWeaponLocal(int weaponId)
+    {
         if (activeWeaponInstance != null)
-            activeWeaponInstance.GetComponent<NetworkObject>().Despawn();
-        activeWeaponInstance = Instantiate(
-            pistol,
-            WeaponSpawnerFront.position,
-            WeaponSpawnerFront.rotation
-        );
-        activeWeaponInstance.GetComponent<NetworkObject>().Spawn();
-        activeWeaponInstance.GetComponent<NetworkObject>().TrySetParent(NetworkObject);
+        {
+            Destroy(activeWeaponInstance);
+            activeWeaponInstance = null;
+        }
+
+        if (weaponId == 1)
+            activeWeaponInstance = Instantiate(pistol, WeaponSpawnerFront);
     }
 }

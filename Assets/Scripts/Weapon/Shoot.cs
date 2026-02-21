@@ -51,6 +51,16 @@ public class Shoot : NetworkBehaviour
     [ClientRpc]
     public void weaponAnimationClientRpc()
     {
+        WeaponData weapondata = null;
+        try
+        {
+            Debug.Log(equipWeapon.activeWeaponInstance.GetComponent<WeaponData>());
+            weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
+            ParticleSystem inst = Instantiate(weapondata.MuzzleFlash, weapondata.bulletSpawn.transform.position, weapondata.bulletSpawn.transform.rotation);
+            Destroy(inst, 0.3f);
+        }
+        catch { }
+        Debug.Log("Animation");
         Animator anim = equipWeapon.GetComponentInChildren<Animator>();
         anim.SetTrigger("shoot");
     }

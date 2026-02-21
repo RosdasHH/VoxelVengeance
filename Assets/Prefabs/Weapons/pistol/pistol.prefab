@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1689208924716168435}
   - component: {fileID: 275233368348093732}
-  - component: {fileID: -7959286248452375840}
   m_Layer: 0
   m_Name: pistol
   m_TagString: Untagged
@@ -50,31 +49,7 @@ MonoBehaviour:
   bullet: {fileID: 2733777879676128361, guid: 7ba0a0cab637a164bb8157f01a3d3354, type: 3}
   bulletSpawn: {fileID: 764164943064823633}
   crosshair: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
---- !u!114 &-7959286248452375840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034103373393833545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1030472568
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
+  MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
 --- !u!1 &5452726768090485755
 GameObject:
   m_ObjectHideFlags: 0
