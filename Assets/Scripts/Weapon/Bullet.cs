@@ -6,6 +6,8 @@ public class Bullet : NetworkBehaviour
     private float bulletSpeed = 40f;
     [SerializeField] Vector3 minBounds;
     [SerializeField] Vector3 maxBounds;
+    [SerializeField] ParticleSystem bulletCollisionParticles;
+    [SerializeField] ParticleSystem bulletHitParticles;
 
     void FixedUpdate()
     {
@@ -24,15 +26,31 @@ public class Bullet : NetworkBehaviour
         if(IsClient && !IsHost) transform.position += transform.forward * bulletSpeed * Time.deltaTime;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(!IsServer) return;
-        if (other.gameObject.CompareTag("Player"))
+        if (!IsServer) return;
+        if (collision.gameObject.CompareTag("Player"))
         {
-            ulong hitPlayerId = other.GetComponent<NetworkObject>().OwnerClientId;
+            ulong hitPlayerId = collision.gameObject.GetComponent<NetworkObject>().OwnerClientId;
             if (hitPlayerId == OwnerClientId) return;
-            other.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10, OwnerClientId, hitPlayerId);
+            collision.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10, OwnerClientId, hitPlayerId);
+            spawnCollisionParticlesClientRpc(collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal), 'h');
+        } else spawnCollisionParticlesClientRpc(collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal), 'c');
+        if (NetworkObject.IsSpawned) NetworkObject.Despawn(true);
+    }
+
+    [ClientRpc]
+    private void spawnCollisionParticlesClientRpc(Vector3 pos, Quaternion rot, char type)
+    {
+        if (type == 'c')
+        {
+            ParticleSystem inst = Instantiate(bulletCollisionParticles, pos, rot);
+            Destroy(inst.gameObject, 0.3f);
         }
-        if(NetworkObject.IsSpawned) NetworkObject.Despawn(true);
+        if (type == 'h')
+        {
+            ParticleSystem inst = Instantiate(bulletHitParticles, pos, rot);
+            Destroy(inst.gameObject, 0.3f);
+        }
     }
 }
