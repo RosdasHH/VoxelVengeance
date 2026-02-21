@@ -4,6 +4,7 @@ public class WeaponData : MonoBehaviour
 {
     public GameObject bullet;
     public Transform bulletSpawn;
-    public Sprite crosshair; 
+    public Sprite crosshair;
+    public float crosshairRange;
     public ParticleSystem MuzzleFlash;
 }
