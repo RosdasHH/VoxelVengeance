@@ -44,6 +44,7 @@ public class PauseMenuManager : NetworkBehaviour
         {
             player = NetworkManager.LocalClient.PlayerObject.gameObject;
             userInput = player.GetComponent<UserInput>();
+            userInput.enabled = true;
         }
 
         Debug.Log("Pause");
@@ -58,10 +59,12 @@ public class PauseMenuManager : NetworkBehaviour
 
     void Unpause()
     {
+        Debug.Log("unpause");
         if (!player || !userInput)
         {
             player = NetworkManager.LocalClient.PlayerObject.gameObject;
             userInput = player.GetComponent<UserInput>();
+            userInput.enabled = true;
         }
 
         curMenuActive = false;
