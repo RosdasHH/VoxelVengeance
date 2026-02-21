@@ -21,6 +21,8 @@ public class EquipWeapon : NetworkBehaviour
 
     private GameObject WeaponCanvas;
     private GameObject Crosshair;
+    private GameObject WallCrosshair;
+
     private LayerMask _ground;
     private float range;
 
@@ -31,7 +33,10 @@ public class EquipWeapon : NetworkBehaviour
             Debug.LogError("weapon canvas not found");
         Crosshair = WeaponCanvas.transform.Find("Crosshair").gameObject;
         if (!Crosshair)
-            Debug.LogError("weapon canvas not found");
+            Debug.LogError("crosshair not found");
+        WallCrosshair = GameObject.FindGameObjectWithTag("WallCrosshair");
+        if (!WallCrosshair)
+            Debug.LogError("wall crosshair not found");
     }
 
     public override void OnNetworkSpawn()
@@ -56,11 +61,33 @@ public class EquipWeapon : NetworkBehaviour
             PlaceCrosshair();
         }
     }
+
     void PlaceCrosshair()
     {
         //cast ray forwards from weapon
-        // Vector3 origin = activeWeaponInstance.transform.position;
-        // bool hitInfoStraight = Physics.Linecast(origin, activeWeaponInstance.)
+        Vector3 origin = activeWeaponInstance.transform.position;
+        bool hitInfoStraight = Physics.Linecast(
+            origin,
+            activeWeaponInstance.transform.forward * range,
+            out RaycastHit hit
+        );
+        if (hitInfoStraight)
+        {
+            Vector3 hitPos = hit.point;
+            SwitchCrosshair(WallCrosshair);
+        }
+    }
+
+    void SwitchCrosshair(GameObject newCrosshair)
+    {
+        if(WallCrosshair && newCrosshair == WallCrosshair)
+        {
+            WallCrosshair.SetActive(true);
+        }
+        else if(Crosshair)
+        {
+            Crosshair.SetActive(true);
+        }
     }
 
     public void tryEquip(int weaponId)
