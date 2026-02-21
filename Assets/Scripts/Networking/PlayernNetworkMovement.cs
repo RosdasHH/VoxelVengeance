@@ -41,28 +41,10 @@ public class PlayerNetworkMovement : NetworkBehaviour
         ServerTransformState.OnValueChanged += OnServerStateChange;
     }
 
-    private void Awake()
-    {
-        playerInput = GetComponent<PlayerInput>();
-        playerInput.enabled = false;
-        GetComponent<UserInput>().enabled = false;
-    }
-
     public override void OnNetworkSpawn()
     {
         if (playerMovement == null)
             playerMovement = GetComponentInChildren<PlayerMovement>();
-
-        if (IsOwner)
-        {
-            playerInput.enabled = true;
-            playerInput.ActivateInput();
-
-            moveAction = playerInput.actions["Move"];
-            moveAction.Enable();
-            GetComponent<UserInput>().enabled = true;
-        }
-
         base.OnNetworkSpawn();
     }
 

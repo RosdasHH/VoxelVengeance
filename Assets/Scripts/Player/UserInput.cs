@@ -1,7 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class UserInput : MonoBehaviour
+public class UserInput : NetworkBehaviour
 {
     public static Vector2 MoveInput;
     public static Vector2 LookInput;
@@ -28,23 +29,22 @@ public class UserInput : MonoBehaviour
 
     private bool inputEnabled = true;
 
-    void Awake()
+    public override void OnNetworkSpawn()
     {
-        playerInput = GetComponent<PlayerInput>();
-        _moveAction = playerInput.actions["Move"];
-        _lookAction = playerInput.actions["Look"];
-        _wasEscapePressed = playerInput.actions["Escape"];
-        _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
-        _shootAction = playerInput.actions["Attack"];
+        if(IsOwner)
+        {
+            playerInput = GetComponent<PlayerInput>();
+            _moveAction = playerInput.actions["Move"];
+            _lookAction = playerInput.actions["Look"];
+            _wasEscapePressed = playerInput.actions["Escape"];
+            _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
+            _shootAction = playerInput.actions["Attack"];
 
-        _slotPressed1 = playerInput.actions["Slot1"];
-        _slotPressed2 = playerInput.actions["Slot2"];
-        _slotPressed3 = playerInput.actions["Slot3"];
-    }
-
-    void OnEnable()
-    {
-        playerInput.currentActionMap.Enable();
+            _slotPressed1 = playerInput.actions["Slot1"];
+            _slotPressed2 = playerInput.actions["Slot2"];
+            _slotPressed3 = playerInput.actions["Slot3"];
+            playerInput.ActivateInput();
+        }
     }
 
     public void ToggleInput(bool enabled)
@@ -61,6 +61,7 @@ public class UserInput : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner) return;
         if (inputEnabled)
         {
             MoveInput = _moveAction.ReadValue<Vector2>();
