@@ -11,9 +11,6 @@ public class PlayerMovement : NetworkBehaviour
     private Transform camSpawn;
 
     [SerializeField]
-    private Camera camPrefab;
-
-    [SerializeField]
     private float speed;
 
     [System.NonSerialized]
@@ -32,10 +29,17 @@ public class PlayerMovement : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         rb = GetComponent<Rigidbody>();
+        AudioListener listener = GetComponent<AudioListener>();
         if (IsOwner)
         {
-            Instantiate(camPrefab, camSpawn);
+            Camera.main.transform.SetParent(camSpawn, false);
+            Camera.main.transform.localPosition = Vector3.zero;
+            Camera.main.transform.localRotation = Quaternion.identity;
             Cursor.lockState = CursorLockMode.Locked;
+            listener.enabled = true;
+        } else
+        {
+            listener.enabled = false;
         }
     }
 

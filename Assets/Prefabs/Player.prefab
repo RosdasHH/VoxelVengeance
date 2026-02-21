@@ -114,13 +114,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745337295730366329}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8, z: -6}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 8, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3163006219648596961}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &6554929786526205934
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 4300491687583123421}
   - component: {fileID: 1943853278826399441}
   - component: {fileID: -4099477330001557804}
+  - component: {fileID: 6371225843515817373}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -240,7 +241,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   ShowTopMostFoldoutHeaderGroup: 1
   camSpawn: {fileID: 4322014929907835203}
-  camPrefab: {fileID: 8737371990667519030, guid: 376d170897a965d4d9eff3d9a23940db, type: 3}
   speed: 10
   accelerationSpeed: 8
   damping: 10
@@ -419,6 +419,14 @@ MonoBehaviour:
         byte0059: 0
         byte0060: 0
         byte0061: 0
+--- !u!81 &6371225843515817373
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554929786526205934}
+  m_Enabled: 1
 --- !u!1 &7607197509368456803
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +655,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Test
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d3de7f87adb142b499a8356ad4a90f94, type: 2}
   m_sharedMaterial: {fileID: -3432073178105815243, guid: d3de7f87adb142b499a8356ad4a90f94, type: 2}
