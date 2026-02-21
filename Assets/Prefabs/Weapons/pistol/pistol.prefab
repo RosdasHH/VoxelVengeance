@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2034103373393833545}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53,6 +53,11 @@ MonoBehaviour:
   crosshair: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   crosshairRange: 9
   MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
+  weaponPosition: 0
+  damage: 15
+  cooldown: 0.3
+  autofire: 0
+  bloom: 2
 --- !u!82 &-7449669534623739687
 AudioSource:
   m_ObjectHideFlags: 0
@@ -167,6 +172,7 @@ MonoBehaviour:
     volume: 0.5
     variation: 0.2
     pitch: 1
+    Sound3D: 1
     values:
     - {fileID: 8300000, guid: fb44f08c3c3c6054ea4c47c26a838d8b, type: 3}
 --- !u!1 &5452726768090485755
@@ -249,7 +255,7 @@ Transform:
   m_GameObject: {fileID: 7133435190107587283}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.565, z: 1.139}
+  m_LocalPosition: {x: 0, y: 0.513, z: 0.811}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -265,15 +271,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalScale.x
-      value: 30
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalScale.y
-      value: 30
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalScale.z
-      value: 30
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalPosition.x

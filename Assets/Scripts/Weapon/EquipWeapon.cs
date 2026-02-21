@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +14,8 @@ public class EquipWeapon : NetworkBehaviour
 
     [SerializeField]
     private Transform WeaponSpawnerFront;
+    [SerializeField]
+    private Transform WeaponSpawnerSide;
 
     [SerializeField]
     public GameObject[] Weapons = new GameObject[3];
@@ -142,8 +145,20 @@ public class EquipWeapon : NetworkBehaviour
             Destroy(activeWeaponInstance);
             activeWeaponInstance = null;
         }
-
-        activeWeaponInstance = Instantiate(Weapons[weaponId], WeaponSpawnerFront);
-        range = activeWeaponInstance.GetComponent<WeaponData>().crosshairRange;
+        WeaponData weaponData = Weapons[weaponId].GetComponent<WeaponData>();
+        Transform spawnpoint;
+        if (weaponData.weaponPosition == WeaponData.WeaponPosition.Side)
+        {
+            spawnpoint = WeaponSpawnerSide;
+        } else
+        {
+            spawnpoint = WeaponSpawnerFront;
+        }
+            activeWeaponInstance = Instantiate(Weapons[weaponId], spawnpoint);
+        range = weaponData.crosshairRange;
+    }
+    public WeaponData getSelectedWeaponData()
+    {
+        return (Weapons[activeWeaponId.Value].GetComponent<WeaponData>());
     }
 }

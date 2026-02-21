@@ -8,6 +8,7 @@ public class UserInput : MonoBehaviour
     public static bool WasEscapePressed;
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
+    public static bool IsShootPressed;
     //weapon slots
     public static bool SlotPressed1;
     public static bool SlotPressed2;
@@ -65,11 +66,12 @@ public class UserInput : MonoBehaviour
             MoveInput = _moveAction.ReadValue<Vector2>();
             LookInput = _lookAction.ReadValue<Vector2>();
             WasShootPressed = _shootAction.WasPressedThisFrame();
+            IsShootPressed = _shootAction.IsPressed();
 
             //weapon slots
             SlotPressed1 = _slotPressed1.WasPressedThisFrame();
             SlotPressed2 = _slotPressed2.WasPressedThisFrame();
-            SlotPressed2 = _slotPressed3.WasPressedThisFrame();
+            SlotPressed3 = _slotPressed3.WasPressedThisFrame();
         }
         WasEscapePressed = _wasEscapePressed.WasPressedThisFrame();
         WasEscapePauseMenuPressed = _wasEscapePauseMenuPressed.WasPressedThisFrame();

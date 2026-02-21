@@ -4,6 +4,7 @@ using UnityEngine;
 public class Bullet : NetworkBehaviour
 {
     private float bulletSpeed = 40f;
+    [System.NonSerialized] public int bulletDamage;
     [SerializeField] Vector3 minBounds;
     [SerializeField] Vector3 maxBounds;
     [SerializeField] ParticleSystem bulletCollisionParticles;
@@ -33,7 +34,7 @@ public class Bullet : NetworkBehaviour
         {
             ulong hitPlayerId = collision.gameObject.GetComponent<NetworkObject>().OwnerClientId;
             if (hitPlayerId == OwnerClientId) return;
-            collision.gameObject.GetComponent<PlayerHealth>().decreaseHealth(10, OwnerClientId, hitPlayerId);
+            collision.gameObject.GetComponent<PlayerHealth>().decreaseHealth(bulletDamage, OwnerClientId, hitPlayerId);
             spawnCollisionParticlesClientRpc(collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal), 'h');
         } else spawnCollisionParticlesClientRpc(collision.GetContact(0).point, Quaternion.LookRotation(collision.GetContact(0).normal), 'c');
         if (NetworkObject.IsSpawned) NetworkObject.Despawn(true);
