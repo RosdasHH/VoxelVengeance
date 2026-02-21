@@ -200,7 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
   audioFiles:
   - name: shoot
-    volume: 1
+    volume: 0.25
     variation: 0.2
     pitch: 0
     Sound3D: 1

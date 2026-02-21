@@ -56,8 +56,8 @@ MonoBehaviour:
   weaponPosition: 0
   damage: 15
   cooldown: 0.3
-  autofire: 0
-  bloom: 2
+  autofire: 1
+  bloom: 0
 --- !u!82 &-7449669534623739687
 AudioSource:
   m_ObjectHideFlags: 0
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
   audioFiles:
   - name: shoot
-    volume: 0.5
+    volume: 0.25
     variation: 0.2
     pitch: 1
     Sound3D: 1

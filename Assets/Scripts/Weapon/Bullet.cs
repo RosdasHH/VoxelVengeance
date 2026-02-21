@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bullet : NetworkBehaviour
 {
-    private float bulletSpeed = 40f;
+    private float bulletSpeed = 60f;
     [System.NonSerialized] public int bulletDamage;
     [SerializeField] Vector3 minBounds;
     [SerializeField] Vector3 maxBounds;

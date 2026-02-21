@@ -296,6 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2537889a60154459ac546d83f88ec2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserInput
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &-3811686222507912034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,7 +552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioPlayer
   audioFiles:
   - name: kill
-    volume: 0.4
+    volume: 0.1
     variation: 0.2
     pitch: 1
     Sound3D: 1

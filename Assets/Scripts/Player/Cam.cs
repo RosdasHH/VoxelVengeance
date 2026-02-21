@@ -9,11 +9,5 @@ public class Cam : MonoBehaviour
     {
         if (player == null)
             return;
-
-        transform.position = new Vector3(
-            player.transform.position.x,
-            player.transform.position.y + 2,
-            player.transform.position.z - 4
-        );
     }
 }
