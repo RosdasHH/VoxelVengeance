@@ -20,7 +20,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (!IsServer) return;
         health.Value -= amount;
-        hitMessageClientRpc(amount, shooterId, hitPlayerId);
+        hitMessageClientRpc(amount, shooterId, hitPlayerId, health.Value);
         if (health.Value <= 0)
         {
             Vector3 randomSpawnPos = GameObject.FindWithTag("GameManager").GetComponent<Spawn>().getRandomSpawnPosition();
@@ -33,6 +33,7 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     private void sendKillMessageClientRpc(ulong shooterId, ulong victimId)
     {
+        GetComponent<AudioPlayer>().Play("kill");
         if (shooterId == NetworkManager.LocalClientId || victimId == NetworkManager.LocalClientId)
         {
             NetworkManager.Singleton.ConnectedClients.TryGetValue(shooterId, out var shooter);
@@ -52,14 +53,16 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void hitMessageClientRpc(int amount, ulong shooterId, ulong hitPlayerId)
+    private void hitMessageClientRpc(int amount, ulong shooterId, ulong hitPlayerId, int health)
     {
         if (NetworkManager.LocalClientId == shooterId)
         {
-            spawnDamageNumber(amount, Color.green);
+            spawnDamageNumber(amount, Color.white);
+            GetComponent<AudioPlayer>().Play("hit");
         } else if(NetworkManager.LocalClientId == hitPlayerId)
         {
             spawnDamageNumber(amount, Color.red);
+            GetComponent<AudioPlayer>().Play("hurt");
         } else
         {
             spawnDamageNumber(amount, Color.blue);
