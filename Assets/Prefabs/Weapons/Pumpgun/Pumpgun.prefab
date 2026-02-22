@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d43ae31f4665a1249bafff46d5acc904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  bullet: {fileID: 2733777879676128361, guid: 7ba0a0cab637a164bb8157f01a3d3354, type: 3}
+  bullet: {fileID: 2733777879676128361, guid: bf776ce4dcea73844a8488492ddb9f92, type: 3}
   bulletSpawn: {fileID: 2705166464792413672}
   crosshair: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   crosshairRange: 3

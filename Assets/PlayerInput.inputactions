@@ -88,34 +88,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeSlot",
-                    "type": "Button",
-                    "id": "04eecdb3-797f-4618-94bc-500973b29440",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Escape",
-                    "type": "Button",
-                    "id": "efd1c5a3-dbf9-4c10-9311-40961e38a102",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "WeaponSide",
-                    "type": "Button",
-                    "id": "c326e2a1-db86-4e9a-b982-a826486b1e06",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Aim",
                     "type": "Button",
                     "id": "efd1c5a3-dbf9-4c10-9311-40961e38a102",
                     "expectedControlType": "",
@@ -136,6 +109,15 @@
                     "name": "RotateCam",
                     "type": "Button",
                     "id": "f88a375e-e980-4207-b9cb-3d5d403d56d9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeSlot",
+                    "type": "Button",
+                    "id": "6062cefc-b0ff-49c9-a4b6-125de90a2840",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -530,41 +512,8 @@
                 },
                 {
                     "name": "",
-                    "id": "5c65f4a1-f7d6-454c-9514-e04e119d5c5c",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "ChangeSlot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "c5bff402-cff0-433d-a091-28dcf58737d4",
                     "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a70c0777-f699-483a-b760-0061b5c05464",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "WeaponSide",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bfbed01f-80ba-4db9-b614-2a87d6c35914",
-                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -591,6 +540,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RotateCam",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d7b816cf-5726-495d-9e47-e42287e1e3ea",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ChangeSlot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

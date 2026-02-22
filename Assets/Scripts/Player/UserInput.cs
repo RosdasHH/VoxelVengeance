@@ -34,7 +34,6 @@ public class UserInput : NetworkBehaviour
     private InputAction _shootAction;
     private InputAction _weaponSide;
     private InputAction _camRotate;
-    private InputAction _Aim;
 
     private InputAction _slotChange;
 
@@ -54,7 +53,6 @@ public class UserInput : NetworkBehaviour
             _camRotate = playerInput.actions["RotateCam"];
 
             _slotChange = playerInput.actions["ChangeSlot"];
-            _Aim = playerInput.actions["Aim"];
             playerInput.ActivateInput();
         }
     }
@@ -82,7 +80,6 @@ public class UserInput : NetworkBehaviour
             IsShootPressed = _shootAction.IsPressed();
             WasWeaponSidePressed = _weaponSide.WasPressedThisFrame();
             WasCamRotatePressed = _camRotate.WasPressedThisFrame();
-            IsAimPressed = _Aim.IsPressed();
 
             if(WasWeaponSidePressed)
             {
