@@ -89,10 +89,9 @@ public class Shoot : NetworkBehaviour
     {
         Vector2 p = Random.insideUnitCircle;
         float yaw = p.x * maxAngleDeg;
-        float pitch = p.y * maxAngleDeg;
 
         Quaternion baseRot = Quaternion.LookRotation(forward, Vector3.up);
-        return baseRot * Quaternion.Euler(pitch, yaw, 0f);
+        return baseRot * Quaternion.Euler(0f, yaw, 0f);
     }
 
     private static Quaternion ApplyBloom(Quaternion baseRot, float bloomDeg)
