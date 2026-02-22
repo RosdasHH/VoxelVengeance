@@ -3,16 +3,21 @@ using UnityEngine;
 
 public class EquipWeapon : NetworkBehaviour
 {
-
     public NetworkVariable<int> activeSlot = new NetworkVariable<int>(
-        0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
     );
 
     public NetworkVariable<int> slot0WeaponId = new NetworkVariable<int>(
-        0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
     );
     public NetworkVariable<int> slot1WeaponId = new NetworkVariable<int>(
-        1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner
+        1,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
     );
 
     public NetworkVariable<UserInput.WeaponSideType> weaponSideNetwork =
@@ -22,8 +27,11 @@ public class EquipWeapon : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
-    [SerializeField] private Transform WeaponSpawnLeft;
-    [SerializeField] private Transform WeaponSpawnRight;
+    [SerializeField]
+    private Transform WeaponSpawnLeft;
+
+    [SerializeField]
+    private Transform WeaponSpawnRight;
 
     public GameObject activeWeaponInstance;
 
@@ -31,7 +39,8 @@ public class EquipWeapon : NetworkBehaviour
     private GameObject WallCrosshair;
     private GameObject curCrosshair;
 
-    [SerializeField] private int _bulletLayerInt;
+    [SerializeField]
+    private int _bulletLayerInt;
     private int chCheckLayers;
 
     private float range;
@@ -43,6 +52,8 @@ public class EquipWeapon : NetworkBehaviour
         pmm = GameObject.FindWithTag("PauseMenuManager")?.GetComponent<PauseMenuManager>();
         chCheckLayers = ~(1 << _bulletLayerInt);
         Debug.Log($"Ignoring bullet layer {_bulletLayerInt}, mask {chCheckLayers}");
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
     }
 
     public override void OnNetworkSpawn()
@@ -50,12 +61,15 @@ public class EquipWeapon : NetworkBehaviour
         if (IsOwner)
         {
             Crosshair = GameObject.FindGameObjectWithTag("GroundCrosshair");
-            if (!Crosshair) Debug.LogError("GroundCrosshair not found");
+            if (!Crosshair)
+                Debug.LogError("GroundCrosshair not found");
 
             WallCrosshair = GameObject.FindGameObjectWithTag("WallCrosshair");
-            if (!WallCrosshair) Debug.LogError("WallCrosshair not found");
+            if (!WallCrosshair)
+                Debug.LogError("WallCrosshair not found");
 
-            if (WallCrosshair) WallCrosshair.SetActive(false);
+            if (WallCrosshair)
+                WallCrosshair.SetActive(false);
         }
 
         activeSlot.OnValueChanged += (_, __) => SpawnWeaponLocal();
@@ -85,7 +99,8 @@ public class EquipWeapon : NetworkBehaviour
 
     public void SetLoadout(int weaponIdSlot0, int weaponIdSlot1)
     {
-        if (!IsOwner || !IsSpawned) return;
+        if (!IsOwner || !IsSpawned)
+            return;
 
         slot0WeaponId.Value = weaponIdSlot0;
         slot1WeaponId.Value = weaponIdSlot1;
@@ -95,13 +110,15 @@ public class EquipWeapon : NetworkBehaviour
 
     public void reloadWeaponLocalOnly()
     {
-        if (!IsClient) return;
+        if (!IsClient)
+            return;
         SpawnWeaponLocal();
     }
 
     public void TryEquipSlot(int slotIndex)
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+            return;
         slotIndex = Mathf.Clamp(slotIndex, 0, 1);
         RequestEquipSlotServerRpc(slotIndex);
     }
@@ -110,7 +127,8 @@ public class EquipWeapon : NetworkBehaviour
     private void RequestEquipSlotServerRpc(int slotIndex)
     {
         slotIndex = Mathf.Clamp(slotIndex, 0, 1);
-        if (activeSlot.Value == slotIndex) return;
+        if (activeSlot.Value == slotIndex)
+            return;
         activeSlot.Value = slotIndex;
     }
 
@@ -127,12 +145,16 @@ public class EquipWeapon : NetworkBehaviour
 
     private void SpawnWeaponLocal()
     {
-        if (!IsClient) return;
-        if (pmm == null || pmm.Weapons == null || pmm.Weapons.Length == 0) return;
+        if (!IsClient)
+            return;
+        if (pmm == null || pmm.Weapons == null || pmm.Weapons.Length == 0)
+            return;
 
         int weaponId = GetActiveWeaponId();
-        if (weaponId < 0 || weaponId >= pmm.Weapons.Length) return;
-        if (pmm.Weapons[weaponId] == null || pmm.Weapons[weaponId].Prefab == null) return;
+        if (weaponId < 0 || weaponId >= pmm.Weapons.Length)
+            return;
+        if (pmm.Weapons[weaponId] == null || pmm.Weapons[weaponId].Prefab == null)
+            return;
 
         if (activeWeaponInstance != null)
         {
@@ -140,27 +162,42 @@ public class EquipWeapon : NetworkBehaviour
             activeWeaponInstance = null;
         }
 
-        Transform spawnpoint = (weaponSideNetwork.Value == UserInput.WeaponSideType.Right)
-            ? WeaponSpawnRight
-            : WeaponSpawnLeft;
+        Transform spawnpoint =
+            (weaponSideNetwork.Value == UserInput.WeaponSideType.Right)
+                ? WeaponSpawnRight
+                : WeaponSpawnLeft;
 
         activeWeaponInstance = Instantiate(pmm.Weapons[weaponId].Prefab, spawnpoint);
 
         var weaponData = activeWeaponInstance.GetComponent<WeaponData>();
-        if (weaponData != null) range = weaponData.crosshairRange;
+        if (weaponData != null)
+            range = weaponData.crosshairRange;
     }
 
     void PlaceCrosshair()
     {
         var wd = activeWeaponInstance.GetComponent<WeaponData>();
-        if (wd == null || wd.bulletSpawn == null) return;
+        if (wd == null || wd.bulletSpawn == null)
+            return;
 
         Vector3 origin = wd.bulletSpawn.position;
         Vector3 forward = wd.bulletSpawn.forward;
 
+        //check if cursor closer than range -> cursor to mousepos
+        float activeRange = range;
+        Camera cam = Camera.main;
+        Ray ray = cam.ScreenPointToRay(UserInput.LookInput);
+        if (Physics.Raycast(ray, out var camHit, 500f, LayerMask.GetMask("Ground")))
+        {
+            Vector3 direction = camHit.point - (transform.position - Vector3.down * 1.25f);
+            direction.y = 0f;
+            if (direction.magnitude < range)
+                activeRange = direction.magnitude;
+        }
+
         bool hitInfoStraight = Physics.Linecast(
             origin,
-            origin + forward * range,
+            origin + forward * activeRange,
             out RaycastHit hit,
             chCheckLayers
         );
@@ -180,7 +217,7 @@ public class EquipWeapon : NetworkBehaviour
                 SwitchCrosshair(Crosshair);
 
             bool hitInfoDown = Physics.Raycast(
-                origin + forward * range,
+                origin + forward * activeRange,
                 Vector3.down,
                 out RaycastHit hitDown,
                 100,
@@ -192,14 +229,17 @@ public class EquipWeapon : NetworkBehaviour
             if (hitInfoDown)
                 curCrosshair.transform.position = hitDown.point + Vector3.up * 0.02f;
             else
-                curCrosshair.transform.position = origin + forward * range + Vector3.down * 1.5f;
+                curCrosshair.transform.position =
+                    origin + forward * activeRange + Vector3.down * 1.5f;
         }
     }
 
     void SwitchCrosshair(GameObject newCh)
     {
-        if (Crosshair) Crosshair.SetActive(newCh == Crosshair);
-        if (WallCrosshair) WallCrosshair.SetActive(newCh == WallCrosshair);
+        if (Crosshair)
+            Crosshair.SetActive(newCh == Crosshair);
+        if (WallCrosshair)
+            WallCrosshair.SetActive(newCh == WallCrosshair);
         curCrosshair = newCh;
     }
 
@@ -217,6 +257,7 @@ public class EquipWeapon : NetworkBehaviour
 
         return pmm.Weapons[weaponId].Prefab.GetComponent<WeaponData>();
     }
+
     public int GetActiveWeaponIdNetwork()
     {
         return activeSlot.Value == 0 ? slot0WeaponId.Value : slot1WeaponId.Value;
@@ -228,16 +269,19 @@ public class EquipWeapon : NetworkBehaviour
             ? WeaponSpawnRight
             : WeaponSpawnLeft;
     }
+
     public WeaponData GetSelectedWeaponDataPrefab()
     {
         if (pmm == null || pmm.Weapons == null || pmm.Weapons.Length == 0)
             return null;
 
         int weaponId = GetActiveWeaponIdNetwork();
-        if (weaponId < 0 || weaponId >= pmm.Weapons.Length) return null;
+        if (weaponId < 0 || weaponId >= pmm.Weapons.Length)
+            return null;
 
         var w = pmm.Weapons[weaponId];
-        if (w == null || w.Prefab == null) return null;
+        if (w == null || w.Prefab == null)
+            return null;
 
         return w.Prefab.GetComponent<WeaponData>();
     }

@@ -114,6 +114,7 @@ public class PauseMenuManager : NetworkBehaviour
         userInput.ToggleInput(false);
         canvas.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         UserInput.playerInput.SwitchCurrentActionMap("UI");
         NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
         playerNameInputField.text = nameAss.playerName.Value.ToString();
@@ -133,7 +134,8 @@ public class PauseMenuManager : NetworkBehaviour
         userInput.ToggleInput(true);
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
         UserInput.playerInput.SwitchCurrentActionMap("Player");
         NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
         nameAss.changeName(playerNameInputField.text);
