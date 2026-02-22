@@ -13,15 +13,57 @@ public class PauseMenuManager : NetworkBehaviour
     [SerializeField]
     private TMP_InputField playerNameInputField;
 
+    [SerializeField] TMP_Dropdown weaponSelection1;
+    [SerializeField] TMP_Dropdown weaponSelection2;
+
+    public Weapon[] selectedWeapons = new Weapon[2];
+
+    EquipWeapon ew;
+
+    [SerializeField]
+    public Weapon[] Weapons;
+
+    [System.Serializable]
+    public class Weapon
+    {
+        public string name;
+        public GameObject Prefab;
+    };
+
     private GameObject player;
     private UserInput userInput;
 
     private bool curMenuActive = false;
 
+    private void Start()
+    {
+        foreach (Weapon t in Weapons)
+        {
+            weaponSelection1.options.Add(new TMP_Dropdown.OptionData() { text = t.name });
+            weaponSelection2.options.Add(new TMP_Dropdown.OptionData() { text = t.name });
+        }
+        //Theres probably a better way to set the dropdown1 to pistol at start..
+        weaponSelection1.value = 0;
+        weaponSelection1.value = 1;
+        weaponSelection1.value = 0;
+        weaponSelection2.value = 1;
+    }
+
+    public void OnChangeDropdown()
+    {
+        selectedWeapons[0] = Weapons[weaponSelection1.value];
+        selectedWeapons[1] = Weapons[weaponSelection2.value];
+        try
+        {
+            ew.reloadWeapon();
+        } catch { }
+    }
+
     public override void OnNetworkSpawn()
     {
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
+        ew = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
     }
 
     void Update()

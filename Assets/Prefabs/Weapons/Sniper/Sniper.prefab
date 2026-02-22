@@ -85,9 +85,10 @@ MonoBehaviour:
   crosshairRange: 20
   MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
   damage: 50
-  cooldown: 1
+  cooldown: 1.5
   autofire: 0
   bloom: 0.5
+  magazineSize: 0
 --- !u!82 &439599694417359350
 AudioSource:
   m_ObjectHideFlags: 0

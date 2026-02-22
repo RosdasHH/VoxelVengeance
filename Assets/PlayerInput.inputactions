@@ -88,27 +88,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Slot1",
+                    "name": "ChangeSlot",
                     "type": "Button",
                     "id": "04eecdb3-797f-4618-94bc-500973b29440",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Slot2",
-                    "type": "Button",
-                    "id": "88c6d449-0066-4686-a678-3ec5662d7f93",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Slot3",
-                    "type": "Button",
-                    "id": "996913e2-ed77-48d9-b677-c3e5fca15555",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -127,6 +109,15 @@
                     "name": "WeaponSide",
                     "type": "Button",
                     "id": "c326e2a1-db86-4e9a-b982-a826486b1e06",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Button",
+                    "id": "33140d07-388e-435a-9dc7-09f1e6229bcd",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -522,33 +513,11 @@
                 {
                     "name": "",
                     "id": "5c65f4a1-f7d6-454c-9514-e04e119d5c5c",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Slot1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ce2c8820-700b-4076-9c1c-d08403bb6554",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Slot2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f1acb753-b5cd-443e-a2c2-e0407adf65bf",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Slot3",
+                    "action": "ChangeSlot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -571,6 +540,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "WeaponSide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfbed01f-80ba-4db9-b614-2a87d6c35914",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

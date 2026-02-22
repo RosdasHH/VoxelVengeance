@@ -23,9 +23,6 @@ public class EquipWeapon : NetworkBehaviour
     [SerializeField]
     private Transform WeaponSpawnRight;
 
-    [SerializeField]
-    public GameObject[] Weapons = new GameObject[3];
-
     public GameObject activeWeaponInstance;
 
     private GameObject Crosshair;
@@ -38,8 +35,11 @@ public class EquipWeapon : NetworkBehaviour
 
     private float range;
 
+    private PauseMenuManager pmm;
+
     private void Awake()
     {
+        pmm = GameObject.FindWithTag("PauseMenuManager").GetComponent<PauseMenuManager>();
         chCheckLayers = ~(1 << _bulletLayerInt);
             Debug.Log($"Ignoring bullet layer {_bulletLayerInt}, mask {chCheckLayers}");
 
@@ -59,7 +59,7 @@ public class EquipWeapon : NetworkBehaviour
         }
         activeWeaponId.OnValueChanged += (pre, post) => SpawnWeaponLocal(post);
         weaponSideNetwork.OnValueChanged += (pre, post) => SpawnWeaponLocal(activeWeaponId.Value);
-        SpawnWeaponLocal(activeWeaponId.Value);
+        reloadWeapon();
     }
     [ServerRpc]
     public void changeWeaponSideNetworkServerRpc(UserInput.WeaponSideType weaponSide)
@@ -67,16 +67,17 @@ public class EquipWeapon : NetworkBehaviour
         weaponSideNetwork.Value = weaponSide;
     }
 
+    public void reloadWeapon()
+    {
+        SpawnWeaponLocal(activeWeaponId.Value);
+    }
+
     private void Update()
     {
         if (!IsOwner || !IsClient)
             return;
-        if (UserInput.SlotPressed1)
-            tryEquip(0);
-        else if (UserInput.SlotPressed2)
-            tryEquip(1);
-        else if (UserInput.SlotPressed3)
-            tryEquip(2);
+        if (UserInput.SlotChange)
+            tryEquip(UserInput.selectedSlot);
 
         if (Crosshair && WallCrosshair && activeWeaponInstance)
         {
@@ -139,7 +140,7 @@ public class EquipWeapon : NetworkBehaviour
     {
         if (!IsOwner)
             return;
-        if (Weapons[weaponId] == null)
+        if (pmm.Weapons[weaponId] == null)
             return;
 
         RequestEquipServerRpc(weaponId);
@@ -159,7 +160,7 @@ public class EquipWeapon : NetworkBehaviour
             Destroy(activeWeaponInstance);
             activeWeaponInstance = null;
         }
-        WeaponData weaponData = Weapons[weaponId].GetComponent<WeaponData>();
+        WeaponData weaponData = pmm.selectedWeapons[activeWeaponId.Value].Prefab.GetComponent<WeaponData>();
         Transform spawnpoint;
 
         if (weaponSideNetwork.Value == UserInput.WeaponSideType.Right)
@@ -169,11 +170,11 @@ public class EquipWeapon : NetworkBehaviour
         {
             spawnpoint = WeaponSpawnLeft;
         }
-            activeWeaponInstance = Instantiate(Weapons[weaponId], spawnpoint);
+            activeWeaponInstance = Instantiate(pmm.selectedWeapons[activeWeaponId.Value].Prefab, spawnpoint);
         range = weaponData.crosshairRange;
     }
     public WeaponData getSelectedWeaponData()
     {
-        return (Weapons[activeWeaponId.Value].GetComponent<WeaponData>());
+        return (pmm.selectedWeapons[activeWeaponId.Value].Prefab.GetComponent<WeaponData>());
     }
 }

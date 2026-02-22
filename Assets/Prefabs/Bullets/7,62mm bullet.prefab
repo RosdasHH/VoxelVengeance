@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   ShowTopMostFoldoutHeaderGroup: 1
-  bulletSpeed: 60
+  bulletSpeed: 50
   minBounds: {x: -32.5, y: -1.2, z: -53.5}
   maxBounds: {x: 27.8, y: -1.2, z: 21.9}
   bulletCollisionParticles: {fileID: 9073621411159726212, guid: 4c5c3dc344e95644cb82cd0cb78910db, type: 3}

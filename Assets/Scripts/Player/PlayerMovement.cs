@@ -1,6 +1,7 @@
 using System.Globalization;
 using Unity.Cinemachine;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
@@ -27,6 +28,8 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private LayerMask mapLayer;
 
+    CinemachineBrain brain;
+
     public override void OnNetworkSpawn()
     {
         AudioListener listener = GetComponent<AudioListener>();
@@ -35,7 +38,7 @@ public class PlayerMovement : NetworkBehaviour
             //Camera.main.transform.SetParent(camSpawn, false);
             //Camera.main.transform.localPosition = Vector3.zero;
             //Camera.main.transform.localRotation = Quaternion.identity;
-            CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
+            brain = Camera.main.GetComponent<CinemachineBrain>();
             if (brain.ActiveVirtualCamera is CinemachineCamera vcam)
             {
                 vcam.Follow = transform;

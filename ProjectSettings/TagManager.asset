@@ -11,6 +11,7 @@ TagManager:
   - HudManager
   - WallCrosshair
   - GroundCrosshair
+  - PauseMenuManager
   layers:
   - Default
   - TransparentFX
