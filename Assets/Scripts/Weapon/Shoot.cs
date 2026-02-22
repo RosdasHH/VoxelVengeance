@@ -20,8 +20,8 @@ public class Shoot : NetworkBehaviour
             return;
         _timer += Time.deltaTime;
         bool shootInput = UserInput.WasShootPressed;
-        if(equipWeapon.getSelectedWeaponData().autofire) shootInput= UserInput.IsShootPressed;
-        if (shootInput && _timer >= equipWeapon.getSelectedWeaponData().cooldown)
+        if(equipWeapon.GetSelectedWeaponData().autofire) shootInput= UserInput.IsShootPressed;
+        if (shootInput && _timer >= equipWeapon.GetSelectedWeaponData().cooldown)
         {
             shoot();
             _timer = 0;
@@ -46,7 +46,7 @@ public class Shoot : NetworkBehaviour
             GameObject bullet = weapondata.bullet;
             Transform spawnPoint = weapondata.bulletSpawn;
             GameObject instance = Instantiate(bullet, spawnPoint.transform.position, bloom(spawnPoint.transform.rotation, weapondata.bloom));
-            instance.GetComponent<Bullet>().bulletDamage = equipWeapon.getSelectedWeaponData().damage;
+            instance.GetComponent<Bullet>().bulletDamage = equipWeapon.GetSelectedWeaponData().damage;
             NetworkObject net = instance.GetComponent<NetworkObject>();
             net.SpawnWithOwnership(OwnerClientId);
             weaponAnimationClientRpc();

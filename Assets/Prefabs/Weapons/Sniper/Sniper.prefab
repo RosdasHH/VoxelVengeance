@@ -205,7 +205,7 @@ MonoBehaviour:
     pitch: 1
     Sound3D: 1
     values:
-    - {fileID: 8300000, guid: fb44f08c3c3c6054ea4c47c26a838d8b, type: 3}
+    - {fileID: 8300000, guid: 4fe7c37e84f9fbb45a28ba7fdda189aa, type: 3}
 --- !u!1 &5723069579750319919
 GameObject:
   m_ObjectHideFlags: 0

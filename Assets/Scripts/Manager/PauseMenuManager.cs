@@ -51,12 +51,32 @@ public class PauseMenuManager : NetworkBehaviour
 
     public void OnChangeDropdown()
     {
-        selectedWeapons[0] = Weapons[weaponSelection1.value];
-        selectedWeapons[1] = Weapons[weaponSelection2.value];
-        try
+        int w0 = weaponSelection1.value;
+        int w1 = weaponSelection2.value;
+
+        selectedWeapons[0] = Weapons[w0];
+        selectedWeapons[1] = Weapons[w1];
+
+        var localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
+        if (localPlayer == null)
         {
-            ew.reloadWeapon();
-        } catch { }
+            return;
+        }
+
+        var equip = localPlayer.GetComponent<EquipWeapon>();
+        if (equip == null)
+        {
+            return;
+        }
+
+        if (!equip.IsOwner || !equip.IsSpawned)
+        {
+            return;
+        }
+
+        equip.SetLoadout(w0, w1);
+
+        equip.reloadWeaponLocalOnly();
     }
 
     public override void OnNetworkSpawn()
