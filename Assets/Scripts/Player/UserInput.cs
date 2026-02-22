@@ -21,6 +21,7 @@ public class UserInput : NetworkBehaviour
     }
     public static bool WasWeaponSidePressed;
     public static WeaponSideType weaponSide = WeaponSideType.Right;
+    public static bool WasCamRotatePressed;
 
     public static bool SlotChange;
 
@@ -32,6 +33,7 @@ public class UserInput : NetworkBehaviour
     private InputAction _wasEscapePauseMenuPressed;
     private InputAction _shootAction;
     private InputAction _weaponSide;
+    private InputAction _camRotate;
     private InputAction _Aim;
 
     private InputAction _slotChange;
@@ -49,6 +51,8 @@ public class UserInput : NetworkBehaviour
             _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
             _shootAction = playerInput.actions["Attack"];
             _weaponSide = playerInput.actions["WeaponSide"];
+            _camRotate = playerInput.actions["RotateCam"];
+
             _slotChange = playerInput.actions["ChangeSlot"];
             _Aim = playerInput.actions["Aim"];
             playerInput.ActivateInput();
@@ -77,6 +81,7 @@ public class UserInput : NetworkBehaviour
             WasShootPressed = _shootAction.WasPressedThisFrame();
             IsShootPressed = _shootAction.IsPressed();
             WasWeaponSidePressed = _weaponSide.WasPressedThisFrame();
+            WasCamRotatePressed = _camRotate.WasPressedThisFrame();
             IsAimPressed = _Aim.IsPressed();
 
             if(WasWeaponSidePressed)

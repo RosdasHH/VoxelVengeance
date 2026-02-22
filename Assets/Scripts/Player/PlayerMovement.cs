@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using Unity.Cinemachine;
 using Unity.Netcode;
@@ -28,6 +29,13 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private LayerMask mapLayer;
 
+
+    [SerializeField]
+    public float enemyDetectorRadius;
+    private GameObject closestEnemy;
+
+    [SerializeField]
+    public LayerMask enemyLayer;
     CinemachineBrain brain;
 
     public override void OnNetworkSpawn()
@@ -53,14 +61,14 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    public void MovePlayer(Vector2 movementInput, float yaw, float tickDelta)
+    public void MovePlayer(Vector2 movementInput, float yaw, float camYaw, float tickDelta)
     {
         transform.rotation = Quaternion.Euler(0f, yaw, 0f);
 
         if (movementInput.magnitude >= 0.1f)
         {
             Vector3 inputDir = new Vector3(movementInput.x, 0f, movementInput.y);
-            Vector3 targetVelocity = inputDir.normalized * speed;
+            Vector3 targetVelocity = Quaternion.Euler(0, camYaw, 0) * inputDir.normalized * speed;
             Vector3 curVelocity = velocity;
             curVelocity.y = 0f;
 
@@ -88,9 +96,9 @@ public class PlayerMovement : NetworkBehaviour
         {
             if (remaining.sqrMagnitude < 0.000001f)
                 break;
-            Vector3 p1 = new Vector3(pos.x, pos.y-height/2, pos.z) + Vector3.up * radius;
-            Vector3 p2 = new Vector3(pos.x, pos.y-height/2, pos.z) + Vector3.up * (height - radius);
-
+            Vector3 p1 = new Vector3(pos.x, pos.y - height / 2, pos.z) + Vector3.up * radius;
+            Vector3 p2 =
+                new Vector3(pos.x, pos.y - height / 2, pos.z) + Vector3.up * (height - radius);
 
             if (
                 Physics.CapsuleCast(

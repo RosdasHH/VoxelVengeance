@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using Unity.Cinemachine;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,7 +13,6 @@ using UnityEngine.UIElements;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
-
     PlayerMovement playerMovement;
 
     private int _tick = 0;
@@ -35,6 +35,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     [SerializeField]
     float threshold = 0.01f;
 
+    CinemachineBrain brain;
+
     private void OnEnable()
     {
         ServerTransformState.OnValueChanged += OnServerStateChange;
@@ -44,6 +46,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
     {
         if (playerMovement == null)
             playerMovement = GetComponentInChildren<PlayerMovement>();
+        brain = Camera.main.GetComponent<CinemachineBrain>();
+
         base.OnNetworkSpawn();
     }
 
@@ -62,6 +66,46 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
         return 0;
     }
+    GameObject UpdateNearbyEnemies()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position,
+            playerMovement.enemyDetectorRadius,
+            playerMovement.enemyLayer
+        );
+
+        GameObject closestEnemy = null;
+        float closestDist = Mathf.Infinity;
+        foreach (Collider hit in hits)
+        {
+            Vector3 dist = hit.gameObject.transform.position - transform.position;
+            if (dist.magnitude < closestDist)
+            {
+                closestDist = dist.magnitude;
+                closestEnemy = hit.gameObject;
+            }
+        }
+
+        return closestEnemy;
+    }
+    float RotateCam(Vector3 towards)
+    {
+        if (brain.ActiveVirtualCamera is not CinemachineCamera vcam)
+            return 0;
+
+        Debug.Log("rotating cam");
+        Vector3 curForwards = vcam.gameObject.transform.forward;
+        curForwards.y = 0f;
+        Vector3 dist = towards - transform.position;
+        dist.y = 0f;
+        float targetAngle = Vector3.Angle(curForwards.normalized, dist.normalized);
+        vcam.gameObject.transform.rotation = Quaternion.Euler(
+            vcam.gameObject.transform.eulerAngles.x,
+            targetAngle,
+            0f
+        );
+        return targetAngle;
+    }
 
     void Update()
     {
@@ -69,7 +113,24 @@ public class PlayerNetworkMovement : NetworkBehaviour
         {
             Vector2 movementInput = UserInput.MoveInput;
             Vector2 lookInput = UserInput.LookInput;
-            ProcessLocalPlayerMovement(movementInput, CalculateRotatation(lookInput));
+
+            float currentCamYaw = 0f;
+            if (brain != null && brain.ActiveVirtualCamera is CinemachineCamera vcam)
+            {
+                GameObject focusEnemy = UpdateNearbyEnemies();
+
+                float rotateAngle = 0f;
+                if (focusEnemy && UserInput.WasCamRotatePressed)
+                {
+                    rotateAngle = RotateCam(focusEnemy.transform.position);
+                }
+                currentCamYaw = vcam.transform.eulerAngles.y + rotateAngle;
+            }
+            ProcessLocalPlayerMovement(
+                movementInput,
+                CalculateRotatation(lookInput),
+                currentCamYaw
+            );
         }
         else
         {
@@ -100,16 +161,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             //Replay inputs
             var inputs = _inputStates
-                .Where(i => i.Tick > serverState.Tick && (i.MovementInput != Vector2.zero || i.yaw != 0))
+                .Where(i =>
+                    i.Tick > serverState.Tick && (i.MovementInput != Vector2.zero || i.yaw != 0)
+                )
                 .OrderBy(i => i.Tick);
 
             foreach (var inputState in inputs)
             {
-                playerMovement.MovePlayer(
-                    inputState.MovementInput,
-                    inputState.yaw,
-                    _tickRate
-                );
+                playerMovement.MovePlayer(inputState.MovementInput, inputState.yaw, inputState.CamYaw, _tickRate);
 
                 TransformState newTransformState = new TransformState()
                 {
@@ -136,23 +195,25 @@ public class PlayerNetworkMovement : NetworkBehaviour
         _transformStates[idx] = serverState;
     }
 
-    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw)
+    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw, float camYaw)
     {
         _tickDeltaTime += Time.deltaTime;
         while (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
-            MovePlayerServerRpc(_tick, movementInput, yaw);
+            MovePlayerServerRpc(_tick, movementInput, yaw, camYaw);
+
             InputState inputState = new InputState
             {
                 Tick = _tick,
                 MovementInput = movementInput,
                 yaw = yaw,
+                CamYaw = camYaw,
             };
 
-            if(!IsServer)
+            if (!IsServer)
             {
-                playerMovement.MovePlayer(movementInput, yaw, _tickRate);
+                playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
             }
 
             TransformState transformState = new TransformState()
@@ -188,13 +249,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw)
+    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw, float camYaw)
     {
         //if(_tick != _previousTransformState.Tick + 1)
         //{
         //    Debug.Log("Lost a package!");
         //}
-        playerMovement.MovePlayer(movementInput, yaw, _tickRate);
+        playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
         TransformState state = new TransformState()
         {
             Tick = tick,

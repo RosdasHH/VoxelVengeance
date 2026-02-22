@@ -117,7 +117,25 @@
                 {
                     "name": "Aim",
                     "type": "Button",
-                    "id": "33140d07-388e-435a-9dc7-09f1e6229bcd",
+                    "id": "efd1c5a3-dbf9-4c10-9311-40961e38a102",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "WeaponSide",
+                    "type": "Button",
+                    "id": "c326e2a1-db86-4e9a-b982-a826486b1e06",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateCam",
+                    "type": "Button",
+                    "id": "f88a375e-e980-4207-b9cb-3d5d403d56d9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -550,7 +568,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a70c0777-f699-483a-b760-0061b5c05464",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "WeaponSide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b720c84-51f3-422a-b1dc-889496119d15",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCam",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
