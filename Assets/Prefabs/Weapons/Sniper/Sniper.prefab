@@ -88,6 +88,8 @@ MonoBehaviour:
   cooldown: 1.5
   autofire: 0
   bloom: 0.5
+  bulletCount: 0
+  bulletSpread: 0
   magazineSize: 0
 --- !u!82 &439599694417359350
 AudioSource:
@@ -215,7 +217,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 653767513756549141}
-  - component: {fileID: 8921189199311839895}
+  - component: {fileID: 8025048130598412941}
   m_Layer: 0
   m_Name: Animator
   m_TagString: Untagged
@@ -236,10 +238,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8914346318652216524}
+  - {fileID: 2770164016561180806}
   m_Father: {fileID: 7766443162319795033}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &8921189199311839895
+--- !u!95 &8025048130598412941
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -249,7 +251,7 @@ Animator:
   m_GameObject: {fileID: 5723069579750319919}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e2e5ff6732f4c564c89eb074e87236c9, type: 2}
+  m_Controller: {fileID: 9100000, guid: e0bc21d9ed53c5c4eb0d1a6f50e7bd2a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -261,7 +263,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1001 &8952214612559721255
+--- !u!1001 &2448586017482979181
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -271,15 +273,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.15
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.15
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -287,11 +289,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.508
+      value: 0.469
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -334,8 +336,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 723520dab6116414383f8afbab688f4c, type: 3}
---- !u!4 &8914346318652216524 stripped
+--- !u!4 &2770164016561180806 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 723520dab6116414383f8afbab688f4c, type: 3}
-  m_PrefabInstance: {fileID: 8952214612559721255}
+  m_PrefabInstance: {fileID: 2448586017482979181}
   m_PrefabAsset: {fileID: 0}

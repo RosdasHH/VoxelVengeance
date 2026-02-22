@@ -12,5 +12,7 @@ public class WeaponData : MonoBehaviour
     public float cooldown;
     public bool autofire;
     public float bloom;
+    public int bulletCount;
+    public int bulletSpread;
     public int magazineSize;
 }

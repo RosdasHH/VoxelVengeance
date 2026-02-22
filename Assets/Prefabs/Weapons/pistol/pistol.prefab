@@ -57,6 +57,7 @@ MonoBehaviour:
   cooldown: 0.3
   autofire: 0
   bloom: 2
+  bulletCount: 0
   magazineSize: 0
 --- !u!82 &-7449669534623739687
 AudioSource:
@@ -287,11 +288,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.47
+      value: 0.075
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.278
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db36e0e838cbf364c8732e53f4e8b166, type: 3}
       propertyPath: m_LocalRotation.w

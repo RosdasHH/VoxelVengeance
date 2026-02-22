@@ -43,14 +43,45 @@ public class Shoot : NetworkBehaviour
         } catch { }
         if (weapondata != null)
         {
-            GameObject bullet = weapondata.bullet;
-            Transform spawnPoint = weapondata.bulletSpawn;
-            GameObject instance = Instantiate(bullet, spawnPoint.transform.position, bloom(spawnPoint.transform.rotation, weapondata.bloom));
-            instance.GetComponent<Bullet>().bulletDamage = equipWeapon.GetSelectedWeaponData().damage;
-            NetworkObject net = instance.GetComponent<NetworkObject>();
-            net.SpawnWithOwnership(OwnerClientId);
+            shootBullets(weapondata);
+
             weaponAnimationClientRpc();
         }
+    }
+    public static Quaternion GetRandomSpreadRotation(
+        Transform origin,
+        float maxAngle)
+    {
+        Vector2 randomPoint = Random.insideUnitCircle;
+
+        float yaw = randomPoint.x * maxAngle;
+        float pitch = randomPoint.y * maxAngle;
+
+        return origin.rotation * Quaternion.Euler(pitch, yaw, 0f);
+    }
+
+    private void shootBullets(WeaponData weapondata)
+    {
+        GameObject bullet = weapondata.bullet;
+        Transform spawnPoint = weapondata.bulletSpawn;
+        if(weapondata.bulletCount > 0)
+        {
+            for (int i = 0; i < weapondata.bulletCount; i++)
+            {
+                shootSingleBullet(bullet, spawnPoint.transform.position, GetRandomSpreadRotation(spawnPoint.transform, weapondata.bulletSpread), weapondata.bloom);
+            }
+        } else
+        {
+            shootSingleBullet(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation, weapondata.bloom);
+        }
+    }
+
+    private void shootSingleBullet(GameObject bullet, Vector3 position, Quaternion rotation, float bloomIntensity)
+    {
+        GameObject instance = Instantiate(bullet, position, bloom(rotation, bloomIntensity));
+        instance.GetComponent<Bullet>().bulletDamage = equipWeapon.GetSelectedWeaponData().damage;
+        NetworkObject net = instance.GetComponent<NetworkObject>();
+        net.SpawnWithOwnership(OwnerClientId);
     }
 
     private Quaternion bloom(Quaternion rot, float bloomAmount)

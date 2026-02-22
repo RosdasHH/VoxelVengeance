@@ -5289,6 +5289,8 @@ MonoBehaviour:
     Prefab: {fileID: 7023106991055693940, guid: d3ae38cddebeb27459a6ed8c188a4e1a, type: 3}
   - name: Sniper
     Prefab: {fileID: 4507941250057859746, guid: 180eed2ea929c7e4da980ebd4debdbed, type: 3}
+  - name: Shotgun
+    Prefab: {fileID: 4435247741765884400, guid: 374391c61c6f29c48a6e83a4f51f96a0, type: 3}
 --- !u!4 &582340426
 Transform:
   m_ObjectHideFlags: 0
