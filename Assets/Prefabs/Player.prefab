@@ -344,12 +344,14 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   activeWeaponId:
     m_InternalValue: 0
+  weaponSideNetwork:
+    m_InternalValue: 0
   WeaponSpawnLeft: {fileID: 6302709329095645781}
   WeaponSpawnRight: {fileID: 6645982675327508295}
   Weapons:
   - {fileID: 2034103373393833545, guid: 30b94a9efec415346a37e361e404362e, type: 3}
   - {fileID: 7023106991055693940, guid: d3ae38cddebeb27459a6ed8c188a4e1a, type: 3}
-  - {fileID: 0}
+  - {fileID: 4507941250057859746, guid: 180eed2ea929c7e4da980ebd4debdbed, type: 3}
   activeWeaponInstance: {fileID: 0}
   _bulletLayerInt: 6
 --- !u!114 &4300491687583123421

@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: wall_w_hole
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 352ec69eaabaa8640809a379bd76fc4f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

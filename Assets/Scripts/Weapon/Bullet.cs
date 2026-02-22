@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Bullet : NetworkBehaviour
 {
-    private float bulletSpeed = 60f;
+    [SerializeField] float bulletSpeed;
     [System.NonSerialized] public int bulletDamage;
     [SerializeField] Vector3 minBounds;
     [SerializeField] Vector3 maxBounds;
@@ -51,7 +51,7 @@ public class Bullet : NetworkBehaviour
         if (type == 'h')
         {
             ParticleSystem inst = Instantiate(bulletHitParticles, pos, rot);
-            Destroy(inst.gameObject, 0.3f);
+            Destroy(inst.gameObject, 0.8f);
         }
     }
 }
