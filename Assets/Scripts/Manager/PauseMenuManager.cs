@@ -83,7 +83,7 @@ public class PauseMenuManager : NetworkBehaviour
     {
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
-        ew = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
+        if(IsOwner && IsClient) ew = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
     }
 
     void Update()

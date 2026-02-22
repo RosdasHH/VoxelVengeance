@@ -1,8 +1,5 @@
-using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 public class Shoot : NetworkBehaviour
 {
@@ -16,99 +13,123 @@ public class Shoot : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !IsClient || equipWeapon == null)
+        if (!IsOwner || !IsClient || !IsSpawned || equipWeapon == null)
             return;
+
+        var localWd = equipWeapon.GetSelectedWeaponData();
+        if (localWd == null) return;
+
         _timer += Time.deltaTime;
+
         bool shootInput = UserInput.WasShootPressed;
-        if(equipWeapon.GetSelectedWeaponData().autofire) shootInput= UserInput.IsShootPressed;
-        if (shootInput && _timer >= equipWeapon.GetSelectedWeaponData().cooldown)
+        if (localWd.autofire) shootInput = UserInput.IsShootPressed;
+
+        if (shootInput && _timer >= localWd.cooldown)
         {
-            shoot();
+            ShootServerRpc();
             _timer = 0;
         }
     }
 
-    private void shoot()
-    {
-        ShootServerRpc();
-    }
-
     [ServerRpc]
-    public void ShootServerRpc()
+    private void ShootServerRpc()
     {
-        WeaponData weapondata = null;
-        try
-        {
-            weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
-        } catch { }
-        if (weapondata != null)
-        {
-            shootBullets(weapondata);
+        if (equipWeapon == null) return;
 
-            weaponAnimationClientRpc();
-        }
-    }
-    public static Quaternion GetRandomSpreadRotation(
-        Transform origin,
-        float maxAngle)
-    {
-        Vector2 randomPoint = Random.insideUnitCircle;
+        WeaponData wd = equipWeapon.GetSelectedWeaponDataPrefab();
+        if (wd == null) return;
 
-        float yaw = randomPoint.x * maxAngle;
-        float pitch = randomPoint.y * maxAngle;
+        Transform weaponRoot = equipWeapon.GetWeaponRootServer();
+        if (weaponRoot == null) return;
 
-        return origin.rotation * Quaternion.Euler(pitch, yaw, 0f);
+        Vector3 origin = weaponRoot.position;
+        Vector3 forward = weaponRoot.forward;
+
+        ShootBulletsServer(wd, origin, forward);
+
+        weaponAnimationClientRpc();
     }
 
-    private void shootBullets(WeaponData weapondata)
+    private void ShootBulletsServer(WeaponData wd, Vector3 origin, Vector3 forward)
     {
-        GameObject bullet = weapondata.bullet;
-        Transform spawnPoint = weapondata.bulletSpawn;
-        if(weapondata.bulletCount > 0)
+        if (wd.bullet == null) return;
+
+        int count = wd.bulletCount;
+
+        if (count > 0)
         {
-            for (int i = 0; i < weapondata.bulletCount; i++)
+            for (int i = 0; i < count; i++)
             {
-                shootSingleBullet(bullet, spawnPoint.transform.position, GetRandomSpreadRotation(spawnPoint.transform, weapondata.bulletSpread), weapondata.bloom);
+                Quaternion spreadRot = GetRandomSpreadRotationFromForward(forward, wd.bulletSpread);
+                Quaternion finalRot = ApplyBloom(spreadRot, wd.bloom);
+
+                SpawnBulletServer(wd, origin, finalRot);
             }
-        } else
+        }
+        else
         {
-            shootSingleBullet(bullet, spawnPoint.transform.position, spawnPoint.transform.rotation, weapondata.bloom);
+            Quaternion baseRot = Quaternion.LookRotation(forward, Vector3.up);
+            Quaternion finalRot = ApplyBloom(baseRot, wd.bloom);
+            SpawnBulletServer(wd, origin, finalRot);
         }
     }
 
-    private void shootSingleBullet(GameObject bullet, Vector3 position, Quaternion rotation, float bloomIntensity)
+    private void SpawnBulletServer(WeaponData wd, Vector3 pos, Quaternion rot)
     {
-        GameObject instance = Instantiate(bullet, position, bloom(rotation, bloomIntensity));
-        instance.GetComponent<Bullet>().bulletDamage = equipWeapon.GetSelectedWeaponData().damage;
-        NetworkObject net = instance.GetComponent<NetworkObject>();
-        net.SpawnWithOwnership(OwnerClientId);
+        GameObject instance = Instantiate(wd.bullet, pos, rot);
+
+        var b = instance.GetComponent<Bullet>();
+        if (b != null) b.bulletDamage = wd.damage;
+
+        var net = instance.GetComponent<NetworkObject>();
+        if (net != null) net.SpawnWithOwnership(OwnerClientId);
     }
 
-    private Quaternion bloom(Quaternion rot, float bloomAmount)
+    private static Quaternion GetRandomSpreadRotationFromForward(Vector3 forward, float maxAngleDeg)
     {
-        float x = rot.eulerAngles.x;
-        float y = rot.eulerAngles.y;
-        float z = rot.eulerAngles.z;
+        Vector2 p = Random.insideUnitCircle;
+        float yaw = p.x * maxAngleDeg;
+        float pitch = p.y * maxAngleDeg;
 
-        float randomY = Random.Range(y-bloomAmount, y+bloomAmount);
+        Quaternion baseRot = Quaternion.LookRotation(forward, Vector3.up);
+        return baseRot * Quaternion.Euler(pitch, yaw, 0f);
+    }
 
-        Quaternion bloomRot = Quaternion.Euler(0, randomY, 0);
-        return bloomRot;
+    private static Quaternion ApplyBloom(Quaternion baseRot, float bloomDeg)
+    {
+        if (bloomDeg <= 0f) return baseRot;
+
+        Vector2 p = Random.insideUnitCircle * bloomDeg;
+        return baseRot * Quaternion.Euler(p.y, p.x, 0f);
     }
 
     [ClientRpc]
-    public void weaponAnimationClientRpc()
+    private void weaponAnimationClientRpc()
     {
-        WeaponData weapondata = null;
+        if (equipWeapon == null) return;
+
         try
         {
-            weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
-            ParticleSystem inst = Instantiate(weapondata.MuzzleFlash, weapondata.bulletSpawn.transform.position, weapondata.bulletSpawn.transform.rotation);
-            Destroy(inst.gameObject, 0.3f);
-            equipWeapon.activeWeaponInstance.GetComponent<AudioPlayer>().Play("shoot");
+            if (equipWeapon.activeWeaponInstance != null)
+            {
+                var weapondata = equipWeapon.activeWeaponInstance.GetComponent<WeaponData>();
+                if (weapondata != null && weapondata.bulletSpawn != null && weapondata.MuzzleFlash != null)
+                {
+                    ParticleSystem inst = Instantiate(
+                        weapondata.MuzzleFlash,
+                        weapondata.bulletSpawn.position,
+                        weapondata.bulletSpawn.rotation
+                    );
+                    Destroy(inst.gameObject, 0.3f);
+                }
+
+                var ap = equipWeapon.activeWeaponInstance.GetComponent<AudioPlayer>();
+                if (ap != null) ap.Play("shoot");
+            }
         }
         catch { }
+
         Animator anim = equipWeapon.GetComponentInChildren<Animator>();
-        anim.SetTrigger("shoot");
+        if (anim != null) anim.SetTrigger("shoot");
     }
 }

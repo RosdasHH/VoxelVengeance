@@ -55,9 +55,9 @@ MonoBehaviour:
   MuzzleFlash: {fileID: 9073621411159726212, guid: 83a5d21510010b34b9a1a0aba1f9dcd1, type: 3}
   damage: 5
   cooldown: 1
-  autofire: 0
+  autofire: 1
   bloom: 0
-  bulletCount: 5
+  bulletCount: 10
   bulletSpread: 20
   magazineSize: 0
 --- !u!82 &2521026852481486739

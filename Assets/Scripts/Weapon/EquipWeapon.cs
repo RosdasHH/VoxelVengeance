@@ -217,4 +217,28 @@ public class EquipWeapon : NetworkBehaviour
 
         return pmm.Weapons[weaponId].Prefab.GetComponent<WeaponData>();
     }
+    public int GetActiveWeaponIdNetwork()
+    {
+        return activeSlot.Value == 0 ? slot0WeaponId.Value : slot1WeaponId.Value;
+    }
+
+    public Transform GetWeaponRootServer()
+    {
+        return weaponSideNetwork.Value == UserInput.WeaponSideType.Right
+            ? WeaponSpawnRight
+            : WeaponSpawnLeft;
+    }
+    public WeaponData GetSelectedWeaponDataPrefab()
+    {
+        if (pmm == null || pmm.Weapons == null || pmm.Weapons.Length == 0)
+            return null;
+
+        int weaponId = GetActiveWeaponIdNetwork();
+        if (weaponId < 0 || weaponId >= pmm.Weapons.Length) return null;
+
+        var w = pmm.Weapons[weaponId];
+        if (w == null || w.Prefab == null) return null;
+
+        return w.Prefab.GetComponent<WeaponData>();
+    }
 }
