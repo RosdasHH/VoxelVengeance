@@ -131,6 +131,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "RotateCam",
+                    "type": "Button",
+                    "id": "f88a375e-e980-4207-b9cb-3d5d403d56d9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -571,6 +580,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "WeaponSide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b720c84-51f3-422a-b1dc-889496119d15",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCam",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
