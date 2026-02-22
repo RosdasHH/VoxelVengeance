@@ -124,7 +124,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CameraRotation",
+                    "name": "WeaponSide",
                     "type": "Button",
                     "id": "c326e2a1-db86-4e9a-b982-a826486b1e06",
                     "expectedControlType": "",
@@ -564,37 +564,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
-                    "id": "f3ae3ce2-56dd-479b-a635-e5b0415a93e7",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraRotation",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Positive",
-                    "id": "aa194eec-b871-4bbb-8c29-bcc65217d168",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "CameraRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Negative",
-                    "id": "5ca26c60-58ca-4d5b-abb0-b222704ae97d",
+                    "name": "",
+                    "id": "a70c0777-f699-483a-b760-0061b5c05464",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CameraRotation",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "WeaponSide",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 }
             ]
         },

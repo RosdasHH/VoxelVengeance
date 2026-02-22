@@ -11,7 +11,13 @@ public class UserInput : NetworkBehaviour
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
     public static bool IsShootPressed;
-    public static float CameraRotation;
+    public enum WeaponSideType
+    {
+        Left,
+        Right
+    }
+    public static bool WasWeaponSidePressed;
+    public static WeaponSideType weaponSide = WeaponSideType.Right;
 
     //weapon slots
     public static bool SlotPressed1;
@@ -25,7 +31,7 @@ public class UserInput : NetworkBehaviour
     private InputAction _lookAction;
     private InputAction _wasEscapePauseMenuPressed;
     private InputAction _shootAction;
-    private InputAction _cameraRotation;
+    private InputAction _weaponSide;
 
     //weapon slots
     private InputAction _slotPressed1;
@@ -44,7 +50,7 @@ public class UserInput : NetworkBehaviour
             _wasEscapePressed = playerInput.actions["Escape"];
             _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
             _shootAction = playerInput.actions["Attack"];
-            _cameraRotation = playerInput.actions["CameraRotation"];
+            _weaponSide = playerInput.actions["WeaponSide"];
 
             _slotPressed1 = playerInput.actions["Slot1"];
             _slotPressed2 = playerInput.actions["Slot2"];
@@ -74,8 +80,20 @@ public class UserInput : NetworkBehaviour
             LookInput = _lookAction.ReadValue<Vector2>();
             WasShootPressed = _shootAction.WasPressedThisFrame();
             IsShootPressed = _shootAction.IsPressed();
-            CameraRotation = _cameraRotation.ReadValue<float>();
-            Debug.Log(CameraRotation);
+            WasWeaponSidePressed = _weaponSide.WasPressedThisFrame();
+
+            if(WasWeaponSidePressed)
+            {
+                if(weaponSide == WeaponSideType.Right)
+                {
+                    weaponSide = WeaponSideType.Left;
+                }
+                else
+                {
+                    weaponSide= WeaponSideType.Right;
+                }
+            }
+            GetComponent<EquipWeapon>().changeWeaponSideNetworkServerRpc(weaponSide);
 
             //weapon slots
             SlotPressed1 = _slotPressed1.WasPressedThisFrame();

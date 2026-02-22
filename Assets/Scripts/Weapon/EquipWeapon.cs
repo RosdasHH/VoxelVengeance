@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -11,11 +12,16 @@ public class EquipWeapon : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
+    public NetworkVariable<UserInput.WeaponSideType> weaponSideNetwork = new NetworkVariable<UserInput.WeaponSideType>(
+    default,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server
+);
 
     [SerializeField]
-    private Transform WeaponSpawnerFront;
+    private Transform WeaponSpawnLeft;
     [SerializeField]
-    private Transform WeaponSpawnerSide;
+    private Transform WeaponSpawnRight;
 
     [SerializeField]
     public GameObject[] Weapons = new GameObject[3];
@@ -52,7 +58,13 @@ public class EquipWeapon : NetworkBehaviour
             WallCrosshair.SetActive(false);
         }
         activeWeaponId.OnValueChanged += (pre, post) => SpawnWeaponLocal(post);
+        weaponSideNetwork.OnValueChanged += (pre, post) => SpawnWeaponLocal(activeWeaponId.Value);
         SpawnWeaponLocal(activeWeaponId.Value);
+    }
+    [ServerRpc]
+    public void changeWeaponSideNetworkServerRpc(UserInput.WeaponSideType weaponSide)
+    {
+        weaponSideNetwork.Value = weaponSide;
     }
 
     private void Update()
@@ -70,6 +82,7 @@ public class EquipWeapon : NetworkBehaviour
         {
             PlaceCrosshair();
         }
+
     }
 
     void PlaceCrosshair()
@@ -136,6 +149,7 @@ public class EquipWeapon : NetworkBehaviour
     public void RequestEquipServerRpc(int weaponId)
     {
         activeWeaponId.Value = weaponId;
+
     }
 
     private void SpawnWeaponLocal(int weaponId)
@@ -147,12 +161,13 @@ public class EquipWeapon : NetworkBehaviour
         }
         WeaponData weaponData = Weapons[weaponId].GetComponent<WeaponData>();
         Transform spawnpoint;
-        if (weaponData.weaponPosition == WeaponData.WeaponPosition.Side)
+
+        if (weaponSideNetwork.Value == UserInput.WeaponSideType.Right)
         {
-            spawnpoint = WeaponSpawnerSide;
+            spawnpoint = WeaponSpawnRight;
         } else
         {
-            spawnpoint = WeaponSpawnerFront;
+            spawnpoint = WeaponSpawnLeft;
         }
             activeWeaponInstance = Instantiate(Weapons[weaponId], spawnpoint);
         range = weaponData.crosshairRange;
