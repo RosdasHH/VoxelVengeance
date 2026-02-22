@@ -13,15 +13,77 @@ public class PauseMenuManager : NetworkBehaviour
     [SerializeField]
     private TMP_InputField playerNameInputField;
 
+    [SerializeField] TMP_Dropdown weaponSelection1;
+    [SerializeField] TMP_Dropdown weaponSelection2;
+
+    public Weapon[] selectedWeapons = new Weapon[2];
+
+    EquipWeapon ew;
+
+    [SerializeField]
+    public Weapon[] Weapons;
+
+    [System.Serializable]
+    public class Weapon
+    {
+        public string name;
+        public GameObject Prefab;
+    };
+
     private GameObject player;
     private UserInput userInput;
 
     private bool curMenuActive = false;
 
+    private void Start()
+    {
+        foreach (Weapon t in Weapons)
+        {
+            weaponSelection1.options.Add(new TMP_Dropdown.OptionData() { text = t.name });
+            weaponSelection2.options.Add(new TMP_Dropdown.OptionData() { text = t.name });
+        }
+        //Theres probably a better way to set the dropdown1 to pistol at start..
+        weaponSelection1.value = 0;
+        weaponSelection1.value = 1;
+        weaponSelection1.value = 0;
+        weaponSelection2.value = 1;
+    }
+
+    public void OnChangeDropdown()
+    {
+        int w0 = weaponSelection1.value;
+        int w1 = weaponSelection2.value;
+
+        selectedWeapons[0] = Weapons[w0];
+        selectedWeapons[1] = Weapons[w1];
+
+        var localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
+        if (localPlayer == null)
+        {
+            return;
+        }
+
+        var equip = localPlayer.GetComponent<EquipWeapon>();
+        if (equip == null)
+        {
+            return;
+        }
+
+        if (!equip.IsOwner || !equip.IsSpawned)
+        {
+            return;
+        }
+
+        equip.SetLoadout(w0, w1);
+
+        equip.reloadWeaponLocalOnly();
+    }
+
     public override void OnNetworkSpawn()
     {
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
+        ew = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
     }
 
     void Update()

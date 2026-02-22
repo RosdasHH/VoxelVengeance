@@ -84,11 +84,11 @@ MonoBehaviour:
   crosshair: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   crosshairRange: 14
   MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
-  weaponPosition: 1
   damage: 5
-  cooldown: 0.1
+  cooldown: 0.15
   autofire: 1
   bloom: 4
+  magazineSize: 0
 --- !u!82 &4211918827394987245
 AudioSource:
   m_ObjectHideFlags: 0

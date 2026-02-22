@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponData : MonoBehaviour
@@ -11,4 +12,5 @@ public class WeaponData : MonoBehaviour
     public float cooldown;
     public bool autofire;
     public float bloom;
+    public int magazineSize;
 }

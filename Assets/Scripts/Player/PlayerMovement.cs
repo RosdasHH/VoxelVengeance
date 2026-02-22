@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Unity.Cinemachine;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
@@ -28,13 +29,13 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private LayerMask mapLayer;
 
+
     [SerializeField]
     public float enemyDetectorRadius;
     private GameObject closestEnemy;
 
     [SerializeField]
     public LayerMask enemyLayer;
-
     CinemachineBrain brain;
 
     public override void OnNetworkSpawn()

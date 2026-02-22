@@ -85,9 +85,10 @@ MonoBehaviour:
   crosshairRange: 20
   MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
   damage: 50
-  cooldown: 1
+  cooldown: 1.5
   autofire: 0
   bloom: 0.5
+  magazineSize: 0
 --- !u!82 &439599694417359350
 AudioSource:
   m_ObjectHideFlags: 0
@@ -204,7 +205,7 @@ MonoBehaviour:
     pitch: 1
     Sound3D: 1
     values:
-    - {fileID: 8300000, guid: fb44f08c3c3c6054ea4c47c26a838d8b, type: 3}
+    - {fileID: 8300000, guid: 4fe7c37e84f9fbb45a28ba7fdda189aa, type: 3}
 --- !u!1 &5723069579750319919
 GameObject:
   m_ObjectHideFlags: 0

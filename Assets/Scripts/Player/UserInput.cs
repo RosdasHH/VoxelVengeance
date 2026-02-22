@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class UserInput : NetworkBehaviour
 {
+    public static int selectedSlot = 0;
+
     //Movement
     public static Vector2 MoveInput;
     public static Vector2 LookInput;
@@ -11,6 +13,7 @@ public class UserInput : NetworkBehaviour
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
     public static bool IsShootPressed;
+    public static bool IsAimPressed;
     public enum WeaponSideType
     {
         Left,
@@ -20,10 +23,7 @@ public class UserInput : NetworkBehaviour
     public static WeaponSideType weaponSide = WeaponSideType.Right;
     public static bool WasCamRotatePressed;
 
-    //weapon slots
-    public static bool SlotPressed1;
-    public static bool SlotPressed2;
-    public static bool SlotPressed3;
+    public static bool SlotChange;
 
     public static PlayerInput playerInput;
     
@@ -34,11 +34,9 @@ public class UserInput : NetworkBehaviour
     private InputAction _shootAction;
     private InputAction _weaponSide;
     private InputAction _camRotate;
+    private InputAction _Aim;
 
-    //weapon slots
-    private InputAction _slotPressed1;
-    private InputAction _slotPressed2;
-    private InputAction _slotPressed3;
+    private InputAction _slotChange;
 
     private bool inputEnabled = true;
 
@@ -55,9 +53,8 @@ public class UserInput : NetworkBehaviour
             _weaponSide = playerInput.actions["WeaponSide"];
             _camRotate = playerInput.actions["RotateCam"];
 
-            _slotPressed1 = playerInput.actions["Slot1"];
-            _slotPressed2 = playerInput.actions["Slot2"];
-            _slotPressed3 = playerInput.actions["Slot3"];
+            _slotChange = playerInput.actions["ChangeSlot"];
+            _Aim = playerInput.actions["Aim"];
             playerInput.ActivateInput();
         }
     }
@@ -85,6 +82,7 @@ public class UserInput : NetworkBehaviour
             IsShootPressed = _shootAction.IsPressed();
             WasWeaponSidePressed = _weaponSide.WasPressedThisFrame();
             WasCamRotatePressed = _camRotate.WasPressedThisFrame();
+            IsAimPressed = _Aim.IsPressed();
 
             if(WasWeaponSidePressed)
             {
@@ -100,9 +98,18 @@ public class UserInput : NetworkBehaviour
             GetComponent<EquipWeapon>().changeWeaponSideNetworkServerRpc(weaponSide);
 
             //weapon slots
-            SlotPressed1 = _slotPressed1.WasPressedThisFrame();
-            SlotPressed2 = _slotPressed2.WasPressedThisFrame();
-            SlotPressed3 = _slotPressed3.WasPressedThisFrame();
+            SlotChange = _slotChange.WasPressedThisFrame();
+            if (SlotChange)
+            {
+                if (selectedSlot == 0)
+                {
+                    selectedSlot = 1;
+                }
+                else
+                {
+                    selectedSlot = 0;
+                }
+            }
         }
         WasEscapePressed = _wasEscapePressed.WasPressedThisFrame();
         WasEscapePauseMenuPressed = _wasEscapePauseMenuPressed.WasPressedThisFrame();
