@@ -56,8 +56,8 @@ MonoBehaviour:
   weaponPosition: 0
   damage: 15
   cooldown: 0.3
-  autofire: 1
-  bloom: 0
+  autofire: 0
+  bloom: 2
 --- !u!82 &-7449669534623739687
 AudioSource:
   m_ObjectHideFlags: 0

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 3657309467874227318}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.161, z: 1.549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -86,9 +86,9 @@ MonoBehaviour:
   MuzzleFlash: {fileID: 9073621411159726212, guid: 5525b0899b56dd140aaf9a2aa93649a4, type: 3}
   weaponPosition: 1
   damage: 5
-  cooldown: 0.15
+  cooldown: 0.1
   autofire: 1
-  bloom: 5
+  bloom: 4
 --- !u!82 &4211918827394987245
 AudioSource:
   m_ObjectHideFlags: 0

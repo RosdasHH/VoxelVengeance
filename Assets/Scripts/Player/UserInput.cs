@@ -4,12 +4,15 @@ using UnityEngine.InputSystem;
 
 public class UserInput : NetworkBehaviour
 {
+    //Movement
     public static Vector2 MoveInput;
     public static Vector2 LookInput;
     public static bool WasEscapePressed;
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
     public static bool IsShootPressed;
+    public static float CameraRotation;
+
     //weapon slots
     public static bool SlotPressed1;
     public static bool SlotPressed2;
@@ -22,6 +25,8 @@ public class UserInput : NetworkBehaviour
     private InputAction _lookAction;
     private InputAction _wasEscapePauseMenuPressed;
     private InputAction _shootAction;
+    private InputAction _cameraRotation;
+
     //weapon slots
     private InputAction _slotPressed1;
     private InputAction _slotPressed2;
@@ -39,6 +44,7 @@ public class UserInput : NetworkBehaviour
             _wasEscapePressed = playerInput.actions["Escape"];
             _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
             _shootAction = playerInput.actions["Attack"];
+            _cameraRotation = playerInput.actions["CameraRotation"];
 
             _slotPressed1 = playerInput.actions["Slot1"];
             _slotPressed2 = playerInput.actions["Slot2"];
@@ -68,6 +74,8 @@ public class UserInput : NetworkBehaviour
             LookInput = _lookAction.ReadValue<Vector2>();
             WasShootPressed = _shootAction.WasPressedThisFrame();
             IsShootPressed = _shootAction.IsPressed();
+            CameraRotation = _cameraRotation.ReadValue<float>();
+            Debug.Log(CameraRotation);
 
             //weapon slots
             SlotPressed1 = _slotPressed1.WasPressedThisFrame();

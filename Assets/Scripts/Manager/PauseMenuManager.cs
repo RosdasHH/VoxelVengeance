@@ -71,7 +71,7 @@ public class PauseMenuManager : NetworkBehaviour
         userInput.ToggleInput(true);
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         UserInput.playerInput.SwitchCurrentActionMap("Player");
         NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
         nameAss.changeName(playerNameInputField.text);

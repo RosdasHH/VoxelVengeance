@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    Rigidbody rb;
-
     [SerializeField]
     private Transform camSpawn;
 
@@ -31,14 +29,19 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        rb = GetComponent<Rigidbody>();
         AudioListener listener = GetComponent<AudioListener>();
         if (IsOwner)
         {
-            Camera.main.transform.SetParent(camSpawn, false);
-            Camera.main.transform.localPosition = Vector3.zero;
-            Camera.main.transform.localRotation = Quaternion.identity;
-            Cursor.lockState = CursorLockMode.Locked;
+            //Camera.main.transform.SetParent(camSpawn, false);
+            //Camera.main.transform.localPosition = Vector3.zero;
+            //Camera.main.transform.localRotation = Quaternion.identity;
+            CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
+            if (brain.ActiveVirtualCamera is CinemachineCamera vcam)
+            {
+                vcam.Follow = transform;
+                vcam.LookAt = transform;
+            }
+            //Cursor.lockState = CursorLockMode.Locked;
             listener.enabled = true;
         }
         else
@@ -47,17 +50,14 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    public void MovePlayer(Vector2 movementInput, Vector2 lookInput, float tickDelta)
+    public void MovePlayer(Vector2 movementInput, float yaw, float tickDelta)
     {
-        float rotationAmount = lookInput.x * rotationSpeed * tickDelta;
-
-        accumulatedRotation += rotationAmount;
-        transform.rotation = Quaternion.Euler(0, accumulatedRotation, 0);
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
 
         if (movementInput.magnitude >= 0.1f)
         {
             Vector3 inputDir = new Vector3(movementInput.x, 0f, movementInput.y);
-            Vector3 targetVelocity = transform.TransformDirection(inputDir.normalized) * speed;
+            Vector3 targetVelocity = inputDir.normalized * speed;
             Vector3 curVelocity = velocity;
             curVelocity.y = 0f;
 
