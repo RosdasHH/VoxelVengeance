@@ -66,6 +66,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
         return 0;
     }
+
     GameObject UpdateNearbyEnemies()
     {
         Collider[] hits = Physics.OverlapSphere(
@@ -88,23 +89,30 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
         return closestEnemy;
     }
+
     float RotateCam(Vector3 towards)
     {
         if (brain.ActiveVirtualCamera is not CinemachineCamera vcam)
             return 0;
 
-        Debug.Log("rotating cam");
-        Vector3 curForwards = vcam.gameObject.transform.forward;
-        curForwards.y = 0f;
-        Vector3 dist = towards - transform.position;
-        dist.y = 0f;
-        float targetAngle = Vector3.Angle(curForwards.normalized, dist.normalized);
-        vcam.gameObject.transform.rotation = Quaternion.Euler(
-            vcam.gameObject.transform.eulerAngles.x,
-            targetAngle,
-            0f
-        );
-        return targetAngle;
+        Vector3 direction = towards - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+            float absoluteYaw = targetRotation.eulerAngles.y;
+
+            vcam.gameObject.transform.rotation = Quaternion.Euler(
+                vcam.gameObject.transform.eulerAngles.x,
+                absoluteYaw,
+                0f
+            );
+
+            return absoluteYaw;
+        }
+
+        return vcam.transform.eulerAngles.y;
     }
 
     void Update()
@@ -168,7 +176,12 @@ public class PlayerNetworkMovement : NetworkBehaviour
 
             foreach (var inputState in inputs)
             {
-                playerMovement.MovePlayer(inputState.MovementInput, inputState.yaw, inputState.CamYaw, _tickRate);
+                playerMovement.MovePlayer(
+                    inputState.MovementInput,
+                    inputState.yaw,
+                    inputState.CamYaw,
+                    _tickRate
+                );
 
                 TransformState newTransformState = new TransformState()
                 {
