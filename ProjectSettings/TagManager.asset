@@ -12,6 +12,7 @@ TagManager:
   - WallCrosshair
   - GroundCrosshair
   - PauseMenuManager
+  - SpawnPoints
   layers:
   - Default
   - TransparentFX

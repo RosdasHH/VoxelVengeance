@@ -23,7 +23,7 @@ public class PlayerHealth : NetworkBehaviour
         hitMessageClientRpc(amount, shooterId, hitPlayerId, health.Value);
         if (health.Value <= 0)
         {
-            Vector3 randomSpawnPos = GameObject.FindWithTag("GameManager").GetComponent<Spawn>().getRandomSpawnPosition();
+            Vector3 randomSpawnPos = GameObject.FindWithTag("SpawnPoints").GetComponent<Spawn>().getRandomSpawnPosition();
             gameObject.GetComponent<PlayerNetworkMovement>().TeleportTo(randomSpawnPos);
             health.Value = 50;
             sendKillMessageClientRpc(shooterId, hitPlayerId);
@@ -42,7 +42,7 @@ public class PlayerHealth : NetworkBehaviour
             string victimName = victim.PlayerObject.GetComponent<NameAssignment>().playerName.Value.ToString();
             if (NetworkManager.LocalClientId == shooterId)
             {
-                GameObject.FindWithTag("HudManager").GetComponent<HUD_Manager>().setKillText("You Killed " + victimName, Color.green);
+                GameObject.FindWithTag("HudManager").GetComponent<HUD_Manager>().setKillText("You Killed " + victimName, Color.white);
 
             }
             else if (NetworkManager.LocalClientId == victimId)

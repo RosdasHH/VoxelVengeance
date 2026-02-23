@@ -17,10 +17,9 @@ public class Spawn : MonoBehaviour
     }
     public Vector3 getRandomSpawnPosition()
     {
-        Transform spawnPoints = transform.Find("SpawnPoints");
-        int spawnPointLength = spawnPoints.childCount;
+        int spawnPointLength = gameObject.transform.childCount;
         int randomIndex = Random.Range(0, spawnPointLength);
-        Transform spawnpoint = spawnPoints.GetChild(randomIndex);
+        Transform spawnpoint = gameObject.transform.GetChild(randomIndex);
         return spawnpoint.position;
     }
 }

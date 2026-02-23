@@ -2,6 +2,7 @@ using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.LowLevelPhysics2D.PhysicsLayers;
 
 public class NameAssignment : NetworkBehaviour
 {
@@ -23,7 +24,16 @@ public class NameAssignment : NetworkBehaviour
         playerName.OnValueChanged += OnNameChanged;
         playerNameText.text = playerName.Value.ToString();
         if (IsOwner)
-            SetNameTagServerRpc("Player " + NetworkManager.LocalClientId.ToString());
+        {
+            string mainmenuPlayername = GameObject.FindGameObjectWithTag("GameManager").GetComponent<MainMenuManager>().playerName;
+            Debug.Log(mainmenuPlayername);
+            if(mainmenuPlayername == null || mainmenuPlayername == "")
+            {
+                string[] randomName = {"Würzige_Gurke", "Voxxler", "Kaktusbombe", "Noobinator", "HeadshotHugo", "GlitchGurke", "RespawnRon", "LagLegende"};
+                mainmenuPlayername = randomName[Random.Range(0, randomName.Length)];
+            }
+            SetNameTagServerRpc(mainmenuPlayername);
+        }
     }
 
     [ServerRpc]

@@ -47,6 +47,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         if (playerMovement == null)
             playerMovement = GetComponentInChildren<PlayerMovement>();
         brain = Camera.main.GetComponent<CinemachineBrain>();
+        if (IsHost) TeleportTo(GameObject.FindGameObjectWithTag("SpawnPoints").GetComponent<Spawn>().getRandomSpawnPosition());
 
         base.OnNetworkSpawn();
     }
