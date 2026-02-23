@@ -44,6 +44,7 @@ public class EquipWeapon : NetworkBehaviour
     private int chCheckLayers;
 
     private float range;
+    public float? rangeOnManualRotation = null;
 
     private PauseMenuManager pmm;
 
@@ -187,12 +188,20 @@ public class EquipWeapon : NetworkBehaviour
         float activeRange = range;
         Camera cam = Camera.main;
         Ray ray = cam.ScreenPointToRay(UserInput.LookInput);
-        if (Physics.Raycast(ray, out var camHit, 500f, LayerMask.GetMask("Ground")))
+        if (rangeOnManualRotation == null)
         {
-            Vector3 direction = camHit.point - (transform.position - Vector3.down * 1.25f);
-            direction.y = 0f;
-            if (direction.magnitude < range)
-                activeRange = direction.magnitude;
+            if (Physics.Raycast(ray, out var camHit, 500f, LayerMask.GetMask("Ground")))
+            {
+                Vector3 direction = camHit.point - (transform.position - Vector3.down * 1.25f);
+                direction.y = 0f;
+                if (direction.magnitude < range)
+                    activeRange = direction.magnitude;
+            }
+        }
+        else
+        { //currently using manual rotation
+            float temp = rangeOnManualRotation ?? 0f;
+            activeRange = temp;
         }
 
         bool hitInfoStraight = Physics.Linecast(

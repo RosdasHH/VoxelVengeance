@@ -9,6 +9,7 @@ public class UserInput : NetworkBehaviour
     //Movement
     public static Vector2 MoveInput;
     public static Vector2 LookInput;
+    public static Vector2 LookDeltaInput;
     public static bool WasEscapePressed;
     public static bool WasEscapePauseMenuPressed;
     public static bool WasShootPressed;
@@ -21,7 +22,8 @@ public class UserInput : NetworkBehaviour
     }
     public static bool WasWeaponSidePressed;
     public static WeaponSideType weaponSide = WeaponSideType.Right;
-    public static bool WasCamRotatePressed;
+    public static bool WasCamFocusPressed;
+    public static bool IsCamRotatePressed;
 
     public static bool SlotChange;
 
@@ -30,9 +32,11 @@ public class UserInput : NetworkBehaviour
     private InputAction _moveAction;
     private InputAction _wasEscapePressed;
     private InputAction _lookAction;
+    private InputAction _lookDeltaAction;
     private InputAction _wasEscapePauseMenuPressed;
     private InputAction _shootAction;
     private InputAction _weaponSide;
+    private InputAction _camFocus;
     private InputAction _camRotate;
 
     private InputAction _slotChange;
@@ -46,10 +50,12 @@ public class UserInput : NetworkBehaviour
             playerInput = GetComponent<PlayerInput>();
             _moveAction = playerInput.actions["Move"];
             _lookAction = playerInput.actions["Look"];
+            _lookDeltaAction = playerInput.actions["LookDelta"];
             _wasEscapePressed = playerInput.actions["Escape"];
             _wasEscapePauseMenuPressed = playerInput.actions["EscapePauseMenu"];
             _shootAction = playerInput.actions["Attack"];
             _weaponSide = playerInput.actions["WeaponSide"];
+            _camFocus = playerInput.actions["FocusCam"];
             _camRotate = playerInput.actions["RotateCam"];
 
             _slotChange = playerInput.actions["ChangeSlot"];
@@ -76,10 +82,12 @@ public class UserInput : NetworkBehaviour
         {
             MoveInput = _moveAction.ReadValue<Vector2>();
             LookInput = _lookAction.ReadValue<Vector2>();
+            LookDeltaInput = _lookDeltaAction.ReadValue<Vector2>();
             WasShootPressed = _shootAction.WasPressedThisFrame();
             IsShootPressed = _shootAction.IsPressed();
             WasWeaponSidePressed = _weaponSide.WasPressedThisFrame();
-            WasCamRotatePressed = _camRotate.WasPressedThisFrame();
+            WasCamFocusPressed = _camFocus.WasPressedThisFrame();
+            IsCamRotatePressed = _camRotate.ReadValue<float>() > 0.1f;
 
             if(WasWeaponSidePressed)
             {

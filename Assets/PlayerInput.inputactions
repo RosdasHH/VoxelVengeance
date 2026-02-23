@@ -25,6 +25,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "LookDelta",
+                    "type": "Value",
+                    "id": "c85c3c37-ab5d-441e-a517-d196dd79b10f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Attack",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
@@ -37,7 +46,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -106,7 +115,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateCam",
+                    "name": "FocusCam",
                     "type": "Button",
                     "id": "f88a375e-e980-4207-b9cb-3d5d403d56d9",
                     "expectedControlType": "",
@@ -118,6 +127,15 @@
                     "name": "ChangeSlot",
                     "type": "Button",
                     "id": "6062cefc-b0ff-49c9-a4b6-125de90a2840",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateCam",
+                    "type": "Button",
+                    "id": "59946ad5-abb0-40fc-a93d-20b78e5eb23c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -287,6 +305,39 @@
                     "processors": "",
                     "groups": "Joystick",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "42f5ea54-9191-4452-8958-e84e92073eea",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "LookDelta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d66c3348-a3a1-4c96-850d-18f276b35564",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Touch",
+                    "action": "LookDelta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a5a5a6d-4ab8-4e25-9225-b56ae1e6b58b",
+                    "path": "<Joystick>/{Hatswitch}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Joystick",
+                    "action": "LookDelta",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -539,7 +590,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RotateCam",
+                    "action": "FocusCam",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -551,6 +602,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ChangeSlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b0a830a-6553-4ace-b361-b6b910344587",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCam",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

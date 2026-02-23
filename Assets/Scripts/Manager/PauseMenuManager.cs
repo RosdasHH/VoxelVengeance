@@ -13,8 +13,11 @@ public class PauseMenuManager : NetworkBehaviour
     [SerializeField]
     private TMP_InputField playerNameInputField;
 
-    [SerializeField] TMP_Dropdown weaponSelection1;
-    [SerializeField] TMP_Dropdown weaponSelection2;
+    [SerializeField]
+    TMP_Dropdown weaponSelection1;
+
+    [SerializeField]
+    TMP_Dropdown weaponSelection2;
 
     public Weapon[] selectedWeapons = new Weapon[2];
 
@@ -83,7 +86,9 @@ public class PauseMenuManager : NetworkBehaviour
     {
         canvas.SetActive(false);
         OptionsMenu.SetActive(false);
-        if(IsOwner && IsClient) ew = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
+        if (IsOwner && IsClient)
+            ew =
+                NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<EquipWeapon>();
     }
 
     void Update()
@@ -116,7 +121,8 @@ public class PauseMenuManager : NetworkBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         UserInput.playerInput.SwitchCurrentActionMap("UI");
-        NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
+        NameAssignment nameAss =
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
         playerNameInputField.text = nameAss.playerName.Value.ToString();
     }
 
@@ -137,7 +143,8 @@ public class PauseMenuManager : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         UserInput.playerInput.SwitchCurrentActionMap("Player");
-        NameAssignment nameAss = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
+        NameAssignment nameAss =
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<NameAssignment>();
         nameAss.changeName(playerNameInputField.text);
     }
 
