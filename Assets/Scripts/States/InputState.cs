@@ -6,4 +6,5 @@ public struct InputState
     public Vector2 MovementInput;
     public float yaw;
     public float CamYaw;
+    public bool RotateByCam;
 }

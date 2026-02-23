@@ -165,7 +165,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
             ProcessLocalPlayerMovement(
                 movementInput,
                 _camRotate ? rotateAngle : CalculatePlayerRotation(lookInput), //player yaw
-                currentCamYaw
+                currentCamYaw,
+                !_camRotate
             );
         }
         else
@@ -173,7 +174,6 @@ public class PlayerNetworkMovement : NetworkBehaviour
             ProcessSimulatedPlayerMovement();
         }
     }
-
     void HandleManualRotationSwitch(bool _camRotate, Vector2 lookInput)
     {
         var localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
@@ -209,6 +209,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
         }
     }
 
+    
+
     private void OnServerStateChange(TransformState previousValue, TransformState serverState)
     {
         if (!IsLocalPlayer || IsHost)
@@ -243,7 +245,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
                     inputState.MovementInput,
                     inputState.yaw,
                     inputState.CamYaw,
-                    _tickRate
+                    _tickRate,
+                    inputState.RotateByCam
                 );
 
                 TransformState newTransformState = new TransformState()
@@ -271,19 +274,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
         _transformStates[idx] = serverState;
     }
 
-    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw, float camYaw)
+    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw, float camYaw, bool rotateByCam)
     {
         _tickDeltaTime += Time.deltaTime;
         while (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
 
-            //since cam can be rotated manually, yaw will be set to null when that happens to prevent 'infinite-spin'.
-            // if yaw is null, take the yaw from the last inputState.
-            // float curYaw = yaw ?? _inputStates[bufferIndex - 1].yaw;
-            // yaw = curYaw;
-
-            MovePlayerServerRpc(_tick, movementInput, yaw, camYaw);
+            MovePlayerServerRpc(_tick, movementInput, yaw, camYaw, rotateByCam);
 
             InputState inputState = new InputState
             {
@@ -291,11 +289,12 @@ public class PlayerNetworkMovement : NetworkBehaviour
                 MovementInput = movementInput,
                 yaw = yaw,
                 CamYaw = camYaw,
+                RotateByCam = rotateByCam
             };
 
             if (!IsServer)
             {
-                playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
+                playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate, rotateByCam);
             }
 
             TransformState transformState = new TransformState()
@@ -331,13 +330,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw, float camYaw)
+    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw, float camYaw, bool rotateByCam)
     {
         //if(_tick != _previousTransformState.Tick + 1)
         //{
         //    Debug.Log("Lost a package!");
         //}
-        playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
+        playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate, rotateByCam);
         TransformState state = new TransformState()
         {
             Tick = tick,
