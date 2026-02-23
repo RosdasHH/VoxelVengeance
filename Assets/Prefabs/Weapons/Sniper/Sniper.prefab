@@ -87,7 +87,7 @@ MonoBehaviour:
   damage: 50
   cooldown: 1
   autofire: 1
-  bloom: 10
+  bloom: 0
   bulletCount: 0
   bulletSpread: 0
   magazineSize: 0

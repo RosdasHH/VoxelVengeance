@@ -37,6 +37,8 @@ public class PlayerMovement : NetworkBehaviour
     public LayerMask enemyLayer;
     CinemachineBrain brain;
 
+    private bool IsCamAssigned;
+
     public override void OnNetworkSpawn()
     {
         AudioListener listener = GetComponent<AudioListener>();
@@ -50,6 +52,7 @@ public class PlayerMovement : NetworkBehaviour
             {
                 vcam.Follow = transform;
                 vcam.LookAt = transform;
+                IsCamAssigned = true;
             }
             //Cursor.lockState = CursorLockMode.Locked;
             listener.enabled = true;
@@ -57,6 +60,17 @@ public class PlayerMovement : NetworkBehaviour
         else
         {
             listener.enabled = false;
+        }
+    }
+
+    //Workaround for host not getting cam assigned
+    private void Update()
+    {
+        if (brain.ActiveVirtualCamera is CinemachineCamera vcam)
+        {
+            vcam.Follow = transform;
+            vcam.LookAt = transform;
+            IsCamAssigned = true;
         }
     }
 
