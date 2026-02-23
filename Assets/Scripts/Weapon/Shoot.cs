@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -5,6 +6,11 @@ public class Shoot : NetworkBehaviour
 {
     private EquipWeapon equipWeapon;
     private float _timer;
+
+    //ammo
+    private TMP_Text ammoCountText;
+    private int ammo;
+    private int maxAmmo;
 
     private void Awake()
     {
@@ -24,11 +30,21 @@ public class Shoot : NetworkBehaviour
         bool shootInput = UserInput.WasShootPressed;
         if (localWd.autofire) shootInput = UserInput.IsShootPressed;
 
-        if (shootInput && _timer >= localWd.cooldown)
+        maxAmmo = localWd.magazineSize;
+
+        if (shootInput && _timer >= localWd.cooldown && ammo > 0)
         {
             ShootServerRpc();
             _timer = 0;
+            ammo--;
         }
+    }
+    public void AssignWeaponData() //weapon has been switched
+    {
+        var localWd = equipWeapon.GetSelectedWeaponData();
+        if(localWd == null) {Debug.LogError("local Weapon Data not found"); return;}
+        maxAmmo = localWd
+
     }
 
     [ServerRpc]
