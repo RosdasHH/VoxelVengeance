@@ -29,7 +29,6 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private LayerMask mapLayer;
 
-
     [SerializeField]
     public float enemyDetectorRadius;
     private GameObject closestEnemy;
@@ -61,14 +60,22 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    public void MovePlayer(Vector2 movementInput, float yaw, float camYaw, float tickDelta)
+    public void MovePlayer(
+        Vector2 movementInput,
+        float yaw,
+        float camYaw,
+        float tickDelta,
+        bool rotateByCam
+    )
     {
         transform.rotation = Quaternion.Euler(0f, yaw, 0f);
 
         if (movementInput.magnitude >= 0.1f)
         {
             Vector3 inputDir = new Vector3(movementInput.x, 0f, movementInput.y);
-            Vector3 targetVelocity = Quaternion.Euler(0, camYaw, 0) * inputDir.normalized * speed;
+            Vector3 targetVelocity = rotateByCam
+                ? Quaternion.Euler(0, camYaw, 0) * inputDir.normalized * speed
+                : Quaternion.Euler(0, yaw, 0) * inputDir.normalized * speed;
             Vector3 curVelocity = velocity;
             curVelocity.y = 0f;
 

@@ -1,15 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using Unity.Cinemachine;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.UIElements;
 
 public class PlayerNetworkMovement : NetworkBehaviour
 {
@@ -32,6 +25,9 @@ public class PlayerNetworkMovement : NetworkBehaviour
     public TransformState _previousTransformState;
     public Vector3 mousePosOnGround;
 
+    bool _lastCamRotate; //used to detect when to capture mouse on manual rotate
+    float mouseFromPlayerDist; //used to set cursor to position after manual rotate
+
     [SerializeField]
     float threshold = 0.01f;
 
@@ -52,7 +48,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         base.OnNetworkSpawn();
     }
 
-    private float CalculateRotatation(Vector2 lookInput)
+    private float CalculatePlayerRotation(Vector2 lookInput)
     {
         Camera cam = Camera.main;
         Ray ray = cam.ScreenPointToRay(lookInput);
@@ -91,7 +87,7 @@ public class PlayerNetworkMovement : NetworkBehaviour
         return closestEnemy;
     }
 
-    float RotateCam(Vector3 towards)
+    float RotateCamFocus(Vector3 towards)
     {
         if (brain.ActiveVirtualCamera is not CinemachineCamera vcam)
             return 0;
@@ -116,29 +112,62 @@ public class PlayerNetworkMovement : NetworkBehaviour
         return vcam.transform.eulerAngles.y;
     }
 
-    void Update()
+    private float RotateCam(Vector2 lookDelta, float tickDelta)
+    {
+        if (brain.ActiveVirtualCamera is not CinemachineCamera vcam)
+            return 0;
+
+        float absoluteYaw = vcam.gameObject.transform.eulerAngles.y;
+        absoluteYaw += lookDelta.x * playerMovement.rotationSpeed * tickDelta;
+        vcam.gameObject.transform.rotation = Quaternion.Euler(
+            vcam.gameObject.transform.eulerAngles.x,
+            absoluteYaw,
+            0f
+        );
+        return absoluteYaw;
+    }
+
+    void Update() // make player movement based on cam while right-click && make cursor rotate properly
     {
         if (IsClient && IsLocalPlayer)
         {
             Vector2 movementInput = UserInput.MoveInput;
             Vector2 lookInput = UserInput.LookInput;
+            Vector2 lookDelta = UserInput.LookDeltaInput;
+            bool _camRotate = UserInput.IsCamRotatePressed;
 
             float currentCamYaw = 0f;
+            float rotateAngle = 0f;
             if (brain != null && brain.ActiveVirtualCamera is CinemachineCamera vcam)
             {
                 GameObject focusEnemy = UpdateNearbyEnemies();
 
-                float rotateAngle = 0f;
-                if (focusEnemy && UserInput.WasCamRotatePressed)
+                if (_camRotate) //rotating cam manually -> in ProcessSimulatedPlayerMovement
                 {
-                    rotateAngle = RotateCam(focusEnemy.transform.position);
+                    Cursor.lockState = CursorLockMode.Locked;
+                    rotateAngle = RotateCam(lookDelta, _tickRate);
+                }
+                else if (focusEnemy && UserInput.WasCamFocusPressed) // focussing cam on enemy
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
+                    rotateAngle = RotateCamFocus(focusEnemy.transform.position);
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.Confined;
                 }
                 currentCamYaw = vcam.transform.eulerAngles.y + rotateAngle;
             }
+            if (_lastCamRotate != _camRotate)
+            {
+                HandleManualRotationSwitch(_camRotate, lookInput);
+            }
+            _lastCamRotate = _camRotate;
             ProcessLocalPlayerMovement(
                 movementInput,
-                CalculateRotatation(lookInput),
-                currentCamYaw
+                _camRotate ? rotateAngle : CalculatePlayerRotation(lookInput), //player yaw
+                currentCamYaw,
+                !_camRotate
             );
         }
         else
@@ -146,6 +175,42 @@ public class PlayerNetworkMovement : NetworkBehaviour
             ProcessSimulatedPlayerMovement();
         }
     }
+    void HandleManualRotationSwitch(bool _camRotate, Vector2 lookInput)
+    {
+        var localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
+        if (localPlayer)
+        {
+            EquipWeapon ew = localPlayer.GetComponent<EquipWeapon>();
+            if (_camRotate) //capture mouse -> switch to manual rotation
+            {
+                //dist to player and send to Equip Weapon
+                if (localPlayer)
+                {
+                    //dist to player
+                    Ray ray = Camera.main.ScreenPointToRay(lookInput);
+                    if (Physics.Raycast(ray, out var camHit, 500f, LayerMask.GetMask("Ground")))
+                    {
+                        mouseFromPlayerDist = (
+                            camHit.point - localPlayer.transform.position
+                        ).magnitude;
+                        ew.rangeOnManualRotation = mouseFromPlayerDist;
+                    }
+                }
+            }
+            else //free mouse
+            {
+                ew.rangeOnManualRotation = null;
+                //mouse to crosshair
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(
+                    localPlayer.transform.position
+                        + localPlayer.transform.forward * mouseFromPlayerDist
+                );
+                Mouse.current.WarpCursorPosition(new Vector2(screenPos.x, screenPos.y));
+            }
+        }
+    }
+
+    
 
     private void OnServerStateChange(TransformState previousValue, TransformState serverState)
     {
@@ -181,7 +246,8 @@ public class PlayerNetworkMovement : NetworkBehaviour
                     inputState.MovementInput,
                     inputState.yaw,
                     inputState.CamYaw,
-                    _tickRate
+                    _tickRate,
+                    inputState.RotateByCam
                 );
 
                 TransformState newTransformState = new TransformState()
@@ -209,13 +275,14 @@ public class PlayerNetworkMovement : NetworkBehaviour
         _transformStates[idx] = serverState;
     }
 
-    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw, float camYaw)
+    public void ProcessLocalPlayerMovement(Vector2 movementInput, float yaw, float camYaw, bool rotateByCam)
     {
         _tickDeltaTime += Time.deltaTime;
         while (_tickDeltaTime > _tickRate)
         {
             int bufferIndex = _tick % BUFFER_SIZE;
-            MovePlayerServerRpc(_tick, movementInput, yaw, camYaw);
+
+            MovePlayerServerRpc(_tick, movementInput, yaw, camYaw, rotateByCam);
 
             InputState inputState = new InputState
             {
@@ -223,11 +290,12 @@ public class PlayerNetworkMovement : NetworkBehaviour
                 MovementInput = movementInput,
                 yaw = yaw,
                 CamYaw = camYaw,
+                RotateByCam = rotateByCam
             };
 
             if (!IsServer)
             {
-                playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
+                playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate, rotateByCam);
             }
 
             TransformState transformState = new TransformState()
@@ -263,13 +331,13 @@ public class PlayerNetworkMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw, float camYaw)
+    private void MovePlayerServerRpc(int tick, Vector2 movementInput, float yaw, float camYaw, bool rotateByCam)
     {
         //if(_tick != _previousTransformState.Tick + 1)
         //{
         //    Debug.Log("Lost a package!");
         //}
-        playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate);
+        playerMovement.MovePlayer(movementInput, yaw, camYaw, _tickRate, rotateByCam);
         TransformState state = new TransformState()
         {
             Tick = tick,
