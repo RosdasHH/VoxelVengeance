@@ -99,7 +99,7 @@ public class Shoot : NetworkBehaviour
         if (bloomDeg <= 0f) return baseRot;
 
         Vector2 p = Random.insideUnitCircle * bloomDeg;
-        return baseRot * Quaternion.Euler(p.y, p.x, 0f);
+        return baseRot * Quaternion.Euler(0f, p.x, 0f);
     }
 
     [ClientRpc]
