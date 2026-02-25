@@ -66,6 +66,9 @@ public class PlayerMovement : NetworkBehaviour
     //Workaround for host not getting cam assigned
     private void Update()
     {
+        if (IsCamAssigned) return;
+        if (!IsOwner) return;
+        if (IsServer) return;
         if (brain.ActiveVirtualCamera is CinemachineCamera vcam)
         {
             vcam.Follow = transform;

@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -23,5 +24,10 @@ public class MainMenuManager : MonoBehaviour
     public void SetPlayerName(string name)
     {
         playerName = name;
+    }
+
+    public void LeaveGame()
+    {
+        Application.Quit();
     }
 }

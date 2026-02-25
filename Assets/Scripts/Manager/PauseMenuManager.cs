@@ -1,6 +1,7 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuManager : NetworkBehaviour
 {
@@ -161,6 +162,7 @@ public class PauseMenuManager : NetworkBehaviour
 
     public void LeaveMatchBtn()
     {
-        Application.Quit();
+        NetworkManager.Singleton.Shutdown();
+        SceneManager.LoadScene("MainMenu");
     }
 }
