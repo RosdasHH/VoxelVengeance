@@ -11,10 +11,19 @@ public class Shoot : NetworkBehaviour
     private TMP_Text ammoCountText;
     private int ammo;
     private int maxAmmo;
+    private WeaponData curWD;
 
     private void Awake()
     {
         equipWeapon = GetComponent<EquipWeapon>();
+        if(equipWeapon != null)
+        {
+            equipWeapon.OnEquipWeapon.AddListener(OnEquipWeapon);
+        }
+    } 
+    void OnEquipWeapon()
+    {
+        curWD = equipWeapon.GetSelectedWeaponData();
     }
 
     private void Update()
@@ -38,13 +47,6 @@ public class Shoot : NetworkBehaviour
             _timer = 0;
             ammo--;
         }
-    }
-    public void AssignWeaponData() //weapon has been switched
-    {
-        var localWd = equipWeapon.GetSelectedWeaponData();
-        if(localWd == null) {Debug.LogError("local Weapon Data not found"); return;}
-        maxAmmo = localWd
-
     }
 
     [ServerRpc]

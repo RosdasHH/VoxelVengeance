@@ -1,5 +1,7 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EquipWeapon : NetworkBehaviour
 {
@@ -47,6 +49,8 @@ public class EquipWeapon : NetworkBehaviour
     public float? rangeOnManualRotation = null;
 
     private PauseMenuManager pmm;
+
+    public UnityEvent OnEquipWeapon;
 
     private void Awake()
     {
@@ -173,6 +177,7 @@ public class EquipWeapon : NetworkBehaviour
         var weaponData = activeWeaponInstance.GetComponent<WeaponData>();
         if (weaponData != null)
             range = weaponData.crosshairRange;
+        OnEquipWeapon?.Invoke(); //event for shoot script to redetermine weapon data
     }
 
     void PlaceCrosshair()
