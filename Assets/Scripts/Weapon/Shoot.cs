@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,9 +7,23 @@ public class Shoot : NetworkBehaviour
     private EquipWeapon equipWeapon;
     private float _timer;
 
+    //ammo
+    private TMP_Text ammoCountText;
+    private int ammo;
+    private int maxAmmo;
+    private WeaponData curWD;
+
     private void Awake()
     {
         equipWeapon = GetComponent<EquipWeapon>();
+        if(equipWeapon != null)
+        {
+            equipWeapon.OnEquipWeapon.AddListener(OnEquipWeapon);
+        }
+    } 
+    void OnEquipWeapon()
+    {
+        curWD = equipWeapon.GetSelectedWeaponData();
     }
 
     private void Update()
@@ -23,6 +38,8 @@ public class Shoot : NetworkBehaviour
 
         bool shootInput = UserInput.WasShootPressed;
         if (localWd.autofire) shootInput = UserInput.IsShootPressed;
+
+        // maxAmmo = localWd.magazineSize;
 
         if (shootInput && _timer >= localWd.cooldown)
         {
