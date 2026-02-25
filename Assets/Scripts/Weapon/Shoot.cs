@@ -39,13 +39,12 @@ public class Shoot : NetworkBehaviour
         bool shootInput = UserInput.WasShootPressed;
         if (localWd.autofire) shootInput = UserInput.IsShootPressed;
 
-        maxAmmo = localWd.magazineSize;
+        // maxAmmo = localWd.magazineSize;
 
-        if (shootInput && _timer >= localWd.cooldown && ammo > 0)
+        if (shootInput && _timer >= localWd.cooldown)
         {
             ShootServerRpc();
             _timer = 0;
-            ammo--;
         }
     }
 
