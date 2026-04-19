@@ -5,7 +5,7 @@ The project focuses on real-time multiplayer gameplay with a server-authoritativ
 
 ---
 
-## 🎮 Core Features
+## Features
 
 - Real-time multiplayer top-down shooting gameplay
 - Server-authoritative architecture
@@ -18,7 +18,7 @@ The project focuses on real-time multiplayer gameplay with a server-authoritativ
 
 ---
 
-## 🔫 Weapons
+## Weapons
 
 The game features 4 different weapons, each with unique firing behavior:
 
@@ -31,7 +31,7 @@ Each weapon has different shooting patterns, recoil behavior, and projectile log
 
 ---
 
-## 🧠 Networking & Architecture
+## Networking & Architecture
 
 The game uses a server-authoritative multiplayer model to ensure fair gameplay and consistency.
 
@@ -44,7 +44,7 @@ Key systems include:
 
 ---
 
-## ⚙️ Game Systems
+## Game Systems
 
 - Main menu (prototype stage)
 - Shooting system fully implemented
@@ -53,7 +53,7 @@ Key systems include:
 
 ---
 
-## 🧪 Notes
+## Notes
 
 This project is a prototype developed to explore multiplayer game architecture, real-time networking, and gameplay systems.
 
@@ -61,7 +61,7 @@ Some features (such as ammo management and full polish of all systems) are not f
 
 ---
 
-## 🛠 Tech Focus
+## Tech Focus
 
 - Multiplayer networking (client-server architecture)
 - Real-time synchronization
@@ -71,14 +71,14 @@ Some features (such as ammo management and full polish of all systems) are not f
 
 ---
 
-## 🚧 Status
+## Status
 
 Voxel Vengeance is a playable prototype but not a finished game.  
 The focus of the project was learning multiplayer architecture and real-time gameplay systems rather than full production release.
 
 ---
 
-## 📷 Screenshots
+## Screenshots
 
 <img width="1298" height="795" alt="image" src="https://github.com/user-attachments/assets/2435b6e2-8e13-45b2-ac0e-34ec3a0072f6" /><br>
 <img width="1296" height="797" alt="image" src="https://github.com/user-attachments/assets/7109239d-8a18-4ad9-ab5e-b26d82c3c491" /><br>
