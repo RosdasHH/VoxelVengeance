@@ -62,7 +62,7 @@ public class NetworkingUI : MonoBehaviour
 
     public void ConnectClientExternal()
     {
-        utp.ConnectionData.Address = "12n.ddns.wtf";
+        utp.ConnectionData.Address = "127.0.0.1"; //External ip / dns
         utp.ConnectionData.Port = 6767;
 
         Connect();
